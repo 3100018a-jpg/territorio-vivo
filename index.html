@@ -1,0 +1,227 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Território Vivo — Projetos Socioambientais Participativos</title>
+  <meta name="description" content="Jogo educativo em 3D sobre projetos socioambientais participativos: missões, maquete viva, perguntas e narração com quatro apresentadores." />
+  <meta name="theme-color" content="#12a5b8" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌱</text></svg>" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/estilo.css" />
+  <script type="importmap">
+    { "imports": { "three": "./lib/three/three.module.min.js", "three/addons/": "./lib/three/addons/" } }
+  </script>
+</head>
+<body>
+  <div id="cena" aria-label="Maquete 3D do território"></div>
+
+  <!-- Carregamento -->
+  <div id="carregando">
+    <div class="semente"><span>🌱</span></div>
+    <p>Preparando o território…</p>
+    <small id="carregandoErro"></small>
+  </div>
+
+  <!-- Tela inicial -->
+  <section id="telaInicial" class="oculto" aria-labelledby="tituloJogo">
+    <div class="ti-conteudo">
+      <p class="ti-selo">Pauta formativa · Meio Ambiente</p>
+      <h1 id="tituloJogo"><span>Território</span> <span>Vivo</span></h1>
+      <p class="ti-sub">Projetos socioambientais participativos: ouvir, envolver, compartilhar decisões e construir junto.</p>
+      <div class="ti-apresentadores" id="tiApresentadores"></div>
+      <div class="ti-botoes">
+        <button id="btnIniciar" class="primario grande">▶ Iniciar jornada</button>
+        <button id="btnContinuar" class="secundario grande oculto">↻ Continuar jornada</button>
+        <button id="btnConfigInicial" class="fantasma">⚙️ Vozes e gráficos</button>
+        <button id="btnAjudaInicial" class="fantasma">❓ Como jogar</button>
+      </div>
+      <p class="ti-dica">🔊 Ligue o som. Para vozes mais naturais no computador, prefira o Microsoft Edge ou o Google Chrome.</p>
+    </div>
+  </section>
+
+  <!-- HUD superior -->
+  <header id="hud" class="oculto">
+    <div class="marca">
+      <span class="logo">🌱</span>
+      <div><b>Território Vivo</b><small>Projetos socioambientais participativos</small></div>
+    </div>
+    <div class="hud-centro">
+      <div class="chip" title="Sementes conquistadas"><span>🌱</span><b id="nSementes">0</b><small>sementes</small></div>
+      <button class="participometro" id="btnParticipometro" title="Participômetro: ouvir explicação">
+        <span class="rot">Participômetro</span>
+        <span class="degraus" id="degraus"><i></i><i></i><i></i><i></i></span>
+        <b id="nivelAtual">—</b>
+      </button>
+      <div class="chip" title="Estrelas"><span>⭐</span><b id="nEstrelas">0</b><small id="nEstrelasMax">/39</small></div>
+    </div>
+    <nav class="hud-dir" aria-label="Controles">
+      <button id="btnDia" title="Dia, entardecer e noite">☀️</button>
+      <button id="btnChuva" title="Ligar ou desligar a chuva">🌧️</button>
+      <button id="btnVisao" title="Visão geral da maquete">🗺️</button>
+      <button id="btnSom" title="Narração ligada ou desligada">🔊</button>
+      <button id="btnConfig" title="Configurações">⚙️</button>
+      <button id="btnAjuda" title="Como jogar">❓</button>
+    </nav>
+  </header>
+
+  <!-- Painel lateral -->
+  <aside id="painel" class="oculto" aria-label="Painel do jogo">
+    <button id="painelToggle" class="painel-toggle" aria-expanded="true" title="Recolher ou abrir o painel">◀</button>
+    <div class="abas" role="tablist">
+      <button role="tab" class="aba ativa" data-aba="missoes">🎯 Missões</button>
+      <button role="tab" class="aba" data-aba="acoes">🌿 Ações</button>
+      <button role="tab" class="aba" data-aba="indicadores">📊 Território</button>
+    </div>
+    <div class="conteudo-aba" id="aba-missoes">
+      <div class="aba-topo"><h3>Missões do território</h3><button class="ouvir" data-painel="missoes" title="Ouvir orientação">🔊</button></div>
+      <ol id="listaMissoes" class="lista-missoes"></ol>
+      <button id="btnDesafio" class="secundario largo">⚡ Desafio Relâmpago</button>
+    </div>
+    <div class="conteudo-aba oculto" id="aba-acoes">
+      <div class="aba-topo"><h3>Ações sustentáveis</h3><button class="ouvir" data-painel="acoes" title="Ouvir orientação">🔊</button></div>
+      <p class="nota">Use suas sementes para espalhar ações pelo bairro. Clique em um item e depois em um espaço livre do terreno.</p>
+      <div id="listaItens" class="lista-itens"></div>
+    </div>
+    <div class="conteudo-aba oculto" id="aba-indicadores">
+      <div class="aba-topo"><h3>Indicadores do território</h3><button class="ouvir" data-painel="indicadores" title="Ouvir orientação">🔊</button></div>
+      <div id="listaIndicadores" class="lista-indicadores"></div>
+      <div class="escada" id="escada"></div>
+      <button id="btnCertificado" class="primario largo" disabled>🏅 Certificado</button>
+    </div>
+  </aside>
+
+  <!-- Caixa de diálogo / narração -->
+  <div id="dialogo" class="oculto" aria-live="polite">
+    <div class="avatar" id="dlgAvatar"></div>
+    <div class="dlg-corpo">
+      <div class="dlg-nome"><b id="dlgNome"></b><span id="dlgPapel"></span></div>
+      <p id="dlgTexto"></p>
+    </div>
+    <div class="dlg-ctrl">
+      <button id="dlgRepetir" title="Repetir a fala">🔁</button>
+      <button id="dlgPular" title="Pular esta fala">⏭</button>
+      <button id="dlgPularTudo" title="Pular a narração">⏩</button>
+    </div>
+  </div>
+
+  <!-- Pergunta -->
+  <div id="modalPergunta" class="modal oculto" role="dialog" aria-modal="true" aria-labelledby="pgTexto">
+    <div class="cartao pergunta">
+      <div class="pg-topo">
+        <div class="etapas" id="pgEtapas"></div>
+        <button id="pgSair" class="fechar" title="Sair">✕</button>
+      </div>
+      <div class="pg-meta"><span class="chip-tipo" id="pgTipo"></span><span class="pg-narr" id="pgNarr"></span></div>
+      <h2 id="pgTexto"></h2>
+      <div class="alternativas" id="pgAlt"></div>
+      <div class="feedback oculto" id="pgFeedback"></div>
+      <div class="pg-rodape">
+        <button id="pgOuvir" class="fantasma">🔊 Ouvir pergunta</button>
+        <button id="pgContinuar" class="primario" disabled>Continuar ➜</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Ficha da construção -->
+  <div id="ficha" class="ficha oculto" role="dialog" aria-labelledby="fichaTitulo">
+    <div class="ficha-cab"><span id="fichaIcone"></span><h3 id="fichaTitulo"></h3><button id="fichaFechar" class="fechar" title="Fechar">✕</button></div>
+    <p id="fichaTexto"></p>
+    <ul id="fichaItens"></ul>
+    <button id="fichaOuvir" class="fantasma">🔊 Ouvir ficha</button>
+  </div>
+
+  <!-- Resumo da missão -->
+  <div id="modalResumo" class="modal oculto" role="dialog" aria-modal="true">
+    <div class="cartao resumo">
+      <div class="confete" aria-hidden="true"></div>
+      <p class="rs-selo">Missão concluída</p>
+      <h2 id="rsTitulo"></h2>
+      <div class="rs-estrelas" id="rsEstrelas"></div>
+      <div class="rs-dados">
+        <div><b id="rsAcertos"></b><small>respostas certas</small></div>
+        <div><b id="rsSementes"></b><small>sementes</small></div>
+        <div><b id="rsNivel"></b><small>nível de participação</small></div>
+      </div>
+      <div id="rsIndicadores" class="rs-ind"></div>
+      <button id="rsFechar" class="primario largo">Continuar explorando ➜</button>
+    </div>
+  </div>
+
+  <!-- Configurações -->
+  <div id="modalConfig" class="modal oculto" role="dialog" aria-modal="true" aria-labelledby="cfgTitulo">
+    <div class="cartao config">
+      <div class="cartao-cab"><h2 id="cfgTitulo">⚙️ Vozes e gráficos</h2><button class="fechar" data-fechar="modalConfig">✕</button></div>
+      <p class="modo-voz" id="cfgModoVoz"></p>
+      <div id="cfgVozes" class="cfg-vozes"></div>
+      <div class="cfg-grade">
+        <label>Velocidade da fala <input type="range" id="cfgVelocidade" min="0.8" max="1.3" step="0.05" /></label>
+        <label>Volume da narração <input type="range" id="cfgVolume" min="0" max="1" step="0.05" /></label>
+        <label class="ck"><input type="checkbox" id="cfgGravadas" /> Usar vozes neurais gravadas (quando disponíveis)</label>
+        <label class="ck"><input type="checkbox" id="cfgAlternativas" /> Ler as alternativas em voz alta</label>
+        <label class="ck"><input type="checkbox" id="cfgAmbiente" /> Som ambiente (pássaros e vento)</label>
+        <label class="ck"><input type="checkbox" id="cfgEfeitos" /> Efeitos sonoros</label>
+        <label class="ck"><input type="checkbox" id="cfgTilt" /> Efeito miniatura (desfoque de maquete)</label>
+        <label>Qualidade gráfica
+          <select id="cfgQualidade"><option value="leve">Leve (celulares)</option><option value="alta">Alta</option><option value="ultra">Ultra (4K)</option></select>
+        </label>
+      </div>
+      <div class="cfg-rodape"><button id="cfgReiniciar" class="perigo">Reiniciar progresso</button><button class="primario" data-fechar="modalConfig">Pronto</button></div>
+    </div>
+  </div>
+
+  <!-- Ajuda -->
+  <div id="modalAjuda" class="modal oculto" role="dialog" aria-modal="true">
+    <div class="cartao ajuda">
+      <div class="cartao-cab"><h2>❓ Como jogar</h2><button class="fechar" data-fechar="modalAjuda">✕</button></div>
+      <ol class="passos">
+        <li><b>Escolha uma missão</b> no painel ou clique nos marcadores da maquete. Comece pela <b>Roda de Escuta</b>, na praça central.</li>
+        <li><b>Ouça a história</b> contada pelos apresentadores. Use 🔁 para repetir, ⏭ para pular uma fala e ⏩ para pular a narração.</li>
+        <li><b>Responda às perguntas</b> das cinco etapas do projeto: diagnóstico, priorização, planejamento, implementação e acompanhamento. As alternativas mudam de ordem a cada vez.</li>
+        <li><b>Nos dilemas participativos</b>, cada escolha corresponde a um degrau da escada: informação, consulta, cogestão ou autonomia.</li>
+        <li><b>Veja a construção</b> surgir na maquete em mutirão e acompanhe os indicadores do território.</li>
+        <li><b>Gaste suas sementes</b> em ações sustentáveis e espalhe árvores, cisternas, composteiras e muito mais pelo bairro.</li>
+        <li><b>Arraste</b> para girar, use a roda do mouse ou o gesto de pinça para aproximar, e o botão direito ou dois dedos para mover a maquete.</li>
+      </ol>
+      <button class="primario largo" data-fechar="modalAjuda">Entendi!</button>
+    </div>
+  </div>
+
+  <!-- Certificado -->
+  <div id="modalCertificado" class="modal oculto" role="dialog" aria-modal="true">
+    <div class="cartao certificado-wrap">
+      <div class="cartao-cab nao-imprimir"><h2>🏅 Certificado</h2><button class="fechar" data-fechar="modalCertificado">✕</button></div>
+      <label class="nao-imprimir cert-nome">Seu nome <input id="certNome" maxlength="60" placeholder="Digite seu nome" /></label>
+      <div class="certificado" id="certificado">
+        <p class="c-selo">Certificado de participação</p>
+        <h2>Território Vivo</h2>
+        <p class="c-texto">Certificamos que <b id="certNomeTxt">________________</b> concluiu a jornada <i>Projetos Socioambientais Participativos</i>, transformando o território com a comunidade, e não apenas para a comunidade.</p>
+        <p class="c-dados" id="certDados"></p>
+        <div class="c-assinaturas" id="certAssinaturas"></div>
+        <p class="c-data" id="certData"></p>
+      </div>
+      <div class="cfg-rodape nao-imprimir"><button class="fantasma" id="certOuvir">🔊 Ouvir</button><button class="primario" id="certImprimir">🖨️ Imprimir ou salvar em PDF</button></div>
+    </div>
+  </div>
+
+  <!-- Confirmação -->
+  <div id="modalConfirmar" class="modal oculto" role="alertdialog" aria-modal="true" aria-labelledby="cfmTexto">
+    <div class="cartao confirmar">
+      <h2 id="cfmTexto"></h2>
+      <div class="cfg-rodape"><button id="cfmNao" class="fantasma">Cancelar</button><button id="cfmSim" class="perigo">Sim, apagar e recomeçar</button></div>
+    </div>
+  </div>
+
+  <!-- Barra de posicionamento de itens -->
+  <div id="barraColocar" class="oculto" role="status">
+    <span id="bcTexto"></span>
+    <button id="bcCancelar" class="fantasma">Cancelar</button>
+  </div>
+
+  <div id="toast" role="status" aria-live="polite"></div>
+
+  <script type="module" src="js/jogo.js"></script>
+</body>
+</html>

@@ -1,0 +1,1280 @@
+{
+  "titulo": "Território Vivo",
+  "subtitulo": "Projetos Socioambientais Participativos",
+  "personagens": {
+    "jurema": {
+      "nome": "Dona Jurema",
+      "papel": "Líder comunitária e guardiã da memória do bairro",
+      "genero": "feminino",
+      "cor": "#ff8a3d",
+      "edge": ["pt-BR-FranciscaNeural"],
+      "edgeRate": "-8%",
+      "edgePitch": "-4Hz",
+      "pitch": 0.9,
+      "rate": 0.93
+    },
+    "caio": {
+      "nome": "Professor Caio",
+      "papel": "Mediador pedagógico e educador ambiental",
+      "genero": "masculino",
+      "cor": "#12a5b8",
+      "edge": ["pt-BR-AntonioNeural"],
+      "edgeRate": "-3%",
+      "edgePitch": "-3Hz",
+      "pitch": 0.88,
+      "rate": 0.98
+    },
+    "lia": {
+      "nome": "Engenheira Lia",
+      "papel": "Engenheira ambiental e arquiteta social",
+      "genero": "feminino",
+      "cor": "#8b5cf6",
+      "edge": ["pt-BR-ThalitaMultilingualNeural", "pt-BR-ThalitaNeural", "pt-BR-FranciscaNeural"],
+      "edgeRate": "+4%",
+      "edgePitch": "+6Hz",
+      "pitch": 1.1,
+      "rate": 1.04
+    },
+    "teo": {
+      "nome": "Téo",
+      "papel": "Estudante do Técnico em Meio Ambiente",
+      "genero": "masculino",
+      "cor": "#2fbf71",
+      "edge": ["pt-BR-MacerioMultilingualNeural", "pt-BR-AntonioNeural"],
+      "edgeRate": "+8%",
+      "edgePitch": "+14Hz",
+      "pitch": 1.18,
+      "rate": 1.07
+    }
+  },
+
+  "etapas": {
+    "diagnostico":   { "nome": "Diagnóstico",   "icone": "🔎", "fala": { "p": "caio", "t": "Etapa um: diagnóstico. Hora de ler o território com quem vive nele." } },
+    "priorizacao":   { "nome": "Priorização",   "icone": "🗳️", "fala": { "p": "caio", "t": "Etapa dois: priorização. Quem decide o que vem primeiro?" } },
+    "planejamento":  { "nome": "Planejamento",  "icone": "📐", "fala": { "p": "caio", "t": "Etapa três: planejamento. Vamos desenhar a solução, unindo diferentes saberes." } },
+    "implementacao": { "nome": "Implementação", "icone": "🛠️", "fala": { "p": "caio", "t": "Etapa quatro: implementação. Mãos à obra, em mutirão!" } },
+    "acompanhamento":{ "nome": "Acompanhamento","icone": "📈", "fala": { "p": "caio", "t": "Etapa cinco: acompanhamento. Como saber se deu certo e o que ajustar?" } }
+  },
+
+  "niveis": {
+    "informacao": { "nome": "Informação", "valor": 1, "cor": "#ff6b6b", "descricao": "A comunidade recebe informações.", "fala": { "p": "jurema", "t": "Sua escolha ficou no degrau da informação: a comunidade apenas recebe notícias." } },
+    "consulta":   { "nome": "Consulta",   "valor": 2, "cor": "#ffb703", "descricao": "A comunidade opina entre opções já definidas.", "fala": { "p": "jurema", "t": "Sua escolha ficou no degrau da consulta: a comunidade opina entre opções prontas." } },
+    "cogestao":   { "nome": "Cogestão",   "valor": 3, "cor": "#2ec4b6", "descricao": "A comunidade constrói decisões junto com a equipe.", "fala": { "p": "jurema", "t": "Ótimo! Sua escolha chegou à cogestão: a comunidade decide junto com a equipe." } },
+    "autonomia":  { "nome": "Autonomia",  "valor": 4, "cor": "#2fbf71", "descricao": "A comunidade assume protagonismo e continuidade.", "fala": { "p": "jurema", "t": "Excelente! Sua escolha chegou à autonomia: a comunidade assume o protagonismo." } }
+  },
+
+  "indicadores": {
+    "verde":      { "nome": "Biodiversidade", "icone": "🌳", "cor": "#2fbf71", "inicial": 18 },
+    "agua":       { "nome": "Água",           "icone": "💧", "cor": "#3fa9f5", "inicial": 16 },
+    "residuos":   { "nome": "Resíduos",       "icone": "♻️", "cor": "#ffb703", "inicial": 12 },
+    "comunidade": { "nome": "Comunidade",     "icone": "🤝", "cor": "#ff6b9a", "inicial": 22 },
+    "economia":   { "nome": "Economia local", "icone": "🪙", "cor": "#8b5cf6", "inicial": 15 }
+  },
+
+  "sistema": {
+    "abertura": [
+      { "p": "jurema", "t": "Seja muito bem-vinda, seja muito bem-vindo ao Território Vivo! Eu sou a Dona Jurema, líder comunitária e guardiã da memória deste bairro." },
+      { "p": "caio", "t": "Eu sou o Professor Caio, mediador pedagógico. Vou acompanhar você em cada etapa dos projetos: diagnóstico, priorização, planejamento, implementação e acompanhamento." },
+      { "p": "lia", "t": "Eu sou a Lia, engenheira ambiental e arquiteta social. Comigo, você vai conhecer as construções sustentáveis e ver cada uma ganhar vida na maquete." },
+      { "p": "teo", "t": "E eu sou o Téo, estudante do Técnico em Meio Ambiente! Vou comentar as suas respostas e mostrar as ações sustentáveis que você pode espalhar pelo bairro." },
+      { "p": "jurema", "t": "Nossa missão é transformar este território com a comunidade, e não apenas para a comunidade. Vamos começar pela praça, ali no centro da maquete." }
+    ],
+    "paineis": {
+      "missoes": { "p": "teo", "t": "Este é o painel de missões. Cada missão transforma um lugar do bairro. As missões concluídas ganham estrelas, e as próximas se abrem conforme você avança." },
+      "acoes": { "p": "teo", "t": "Aqui ficam as ações sustentáveis. Escolha um item, use as suas sementes e clique no terreno da maquete para colocá-lo no território." },
+      "indicadores": { "p": "lia", "t": "Este é o painel de indicadores do território: biodiversidade, água, resíduos, comunidade e economia local. Cada construção e cada ação fazem esses números crescerem." },
+      "participometro": { "p": "caio", "t": "O participômetro mostra em que degrau da escada da participação estão as suas decisões: informação, consulta, cogestão ou autonomia." },
+      "desafio": { "p": "caio", "t": "Bem-vindo ao Desafio Relâmpago! São dez perguntas sorteadas de todo o jogo. Responda com atenção e conquiste sementes extras." },
+      "desafioFim": { "p": "teo", "t": "Desafio concluído! Confira quantas perguntas você acertou e volte sempre que quiser treinar." },
+      "configuracoes": { "p": "teo", "t": "Aqui você escolhe a voz de cada apresentador, a velocidade da fala e a qualidade gráfica da maquete." },
+      "ajuda": { "p": "caio", "t": "Como jogar: escolha uma missão, ouça a história, responda às perguntas de cada etapa e acompanhe a construção na maquete. Com as sementes conquistadas, realize ações sustentáveis pelo bairro." },
+      "bloqueada": { "p": "teo", "t": "Essa missão ainda está bloqueada. Conclua primeiro a missão da Roda de Escuta, na praça central, para liberar as outras." },
+      "bloqueadaFinal": { "p": "jurema", "t": "A Casa do Conselho só se abre depois que o bairro tiver pelo menos seis construções. Continue as missões!" },
+      "sementesInsuf": { "p": "teo", "t": "Ops! Você ainda não tem sementes suficientes. Responda às perguntas das missões para ganhar mais." },
+      "construcaoInicio": { "p": "lia", "t": "Mutirão iniciado! Moradores, estudantes e técnicos estão construindo juntos. Acompanhe na maquete." },
+      "missaoConcluida": { "p": "caio", "t": "Missão concluída! Confira as suas estrelas, as suas sementes e o impacto no território." },
+      "chuva": { "p": "lia", "t": "Começou a chover! Observe como os jardins de chuva e as cisternas ajudam o bairro a lidar com a água." },
+      "noite": { "p": "jurema", "t": "A noite chegou ao bairro. Veja as luzes acesas, os vaga-lumes e a vida que continua no território." },
+      "dia": { "p": "teo", "t": "Bom dia, território! Hora de continuar transformando o bairro." },
+      "itemColocado": { "p": "teo", "t": "Ação sustentável realizada! O território agradece." },
+      "modoColocar": { "p": "teo", "t": "Agora clique em um espaço livre do terreno para posicionar o item. Para cancelar, aperte o botão cancelar." },
+      "certificado": { "p": "caio", "t": "Este é o seu certificado. Digite o seu nome e imprima para guardar ou compartilhar." },
+      "missaoCancelada": { "p": "teo", "t": "Tudo bem, você pode voltar a essa missão quando quiser." }
+    },
+    "final": [
+      { "p": "jurema", "t": "Você conseguiu! O bairro está verde, vivo e, principalmente, organizado para decidir junto." },
+      { "p": "caio", "t": "Leve sempre com você as quatro perguntas: quem participa, quando participa, do que participa e quais barreiras precisam ser reduzidas." },
+      { "p": "lia", "t": "Cada construção que você viu nasceu da combinação entre técnica, natureza e saber popular." },
+      { "p": "teo", "t": "Agora é com você: leve essa ideia para a sua escola e para o seu território. Até a próxima missão!" }
+    ],
+    "reacoes": {
+      "acerto": ["Muito bem!", "Isso mesmo!", "Excelente escolha!", "Perfeito, você acertou!"],
+      "erro": ["Quase lá.", "Não foi dessa vez.", "Vamos rever juntos."]
+    },
+    "letras": ["Alternativa A.", "Alternativa B.", "Alternativa C.", "Alternativa D."]
+  },
+
+  "missoes": [
+    {
+      "id": "escuta",
+      "titulo": "Escuta que vira decisão",
+      "construcao": "rodaEscuta",
+      "nomeConstrucao": "Roda de Escuta da Praça Viva",
+      "icone": "🗣️",
+      "cor": "#ff8a3d",
+      "lote": "centro",
+      "resumo": "O Projeto Praça Viva: ouvir a comunidade significa, necessariamente, fazê-la participar?",
+      "intro": [
+        { "p": "jurema", "t": "Esta praça já foi o coração da nossa comunidade. Hoje ela está cinza, sem sombra, com lixo pelos cantos e quase sem lugar para conviver." },
+        { "p": "caio", "t": "Uma turma do Técnico em Meio Ambiente fez um diagnóstico da praça e criou quatro propostas. Depois, abriu um formulário on-line para os moradores votarem e fez uma reunião aberta para ouvir sugestões." },
+        { "p": "lia", "t": "As propostas mais votadas entraram no projeto final, e a escola chamou a experiência de projeto participativo. Mas será que ouvir a comunidade significa, necessariamente, fazê-la participar?" },
+        { "p": "caio", "t": "Para responder, usamos a escada da participação. Na informação, a comunidade apenas recebe notícias. Na consulta, opina entre opções já definidas. Na cogestão, constrói as decisões junto com a equipe. E, na autonomia, assume o protagonismo e a continuidade." },
+        { "p": "teo", "t": "Então bora redesenhar o Projeto Praça Viva para subir nessa escada, etapa por etapa!" }
+      ],
+      "perguntas": [
+        {
+          "etapa": "diagnostico", "tipo": "Situação-problema", "n": "caio",
+          "q": "No Projeto Praça Viva, os moradores escolheram entre quatro propostas e deram sugestões. Qual foi o principal limite dessa participação?",
+          "alt": [
+            { "t": "Os moradores não participaram do diagnóstico nem da construção das possibilidades.", "c": true },
+            { "t": "Os moradores participaram de todas as etapas, mas não puderam votar nas propostas." },
+            { "t": "O formulário on-line garantiu decisão compartilhada em todas as etapas do projeto." },
+            { "t": "A reunião aberta transformou a consulta em autonomia plena da comunidade local." }
+          ],
+          "e": "A participação foi predominantemente consultiva. A comunidade reagiu a escolhas já feitas, mas não ajudou a ler o território nem a imaginar as soluções. Para ampliar, é preciso incluir diferentes vozes desde o diagnóstico."
+        },
+        {
+          "etapa": "priorizacao", "tipo": "Dilema participativo", "n": "jurema",
+          "q": "A turma quer decidir o que fazer primeiro na praça. Qual caminho você escolhe para envolver os moradores?",
+          "alt": [
+            { "t": "Publicar no mural da escola a lista das ações que a equipe já decidiu realizar.", "nivel": "informacao" },
+            { "t": "Enviar um formulário on-line para os moradores votarem nas propostas prontas.", "nivel": "consulta" },
+            { "t": "Montar uma assembleia em que moradores e estudantes definem juntos as prioridades.", "nivel": "cogestao" },
+            { "t": "Apoiar um coletivo de moradores que conduz e decide as prioridades da praça.", "nivel": "autonomia" }
+          ],
+          "e": "Votar entre opções prontas é consulta. Quando moradores e estudantes definem juntos, há cogestão. Quando a própria comunidade conduz o processo, chegamos à autonomia."
+        },
+        {
+          "etapa": "planejamento", "tipo": "Interdisciplinar", "n": "lia",
+          "q": "Que combinação de áreas ajuda os estudantes a compreender as necessidades da praça antes de definir as intervenções?",
+          "alt": [
+            { "t": "Ecologia, geografia, sociologia e saúde, integradas aos saberes dos moradores.", "c": true },
+            { "t": "Apenas ecologia, porque arborização e resíduos são temas somente biológicos." },
+            { "t": "Apenas engenharia, porque a praça se resolve somente com obras e equipamentos novos." },
+            { "t": "Apenas matemática, porque a votação do formulário já revela as necessidades." }
+          ],
+          "e": "Um território é, ao mesmo tempo, natural, social e cultural. Quando diferentes áreas dialogam com os saberes locais, surgem soluções que uma única área dificilmente produziria sozinha."
+        },
+        {
+          "etapa": "implementacao", "tipo": "Decisão pedagógica", "n": "teo",
+          "q": "Na hora de implementar, como a turma mantém a comunidade como coautora do projeto?",
+          "alt": [
+            { "t": "Organizando mutirões em que moradores e estudantes executam e ajustam as ações.", "c": true },
+            { "t": "Contratando uma empresa para executar tudo rapidamente, sem envolver moradores." },
+            { "t": "Executando as obras durante as férias, para não incomodar a vizinhança da praça." },
+            { "t": "Divulgando fotos da obra pronta, para que os moradores conheçam o resultado final." }
+          ],
+          "e": "No mutirão, a comunidade não só executa, mas também ajusta o projeto conforme a realidade aparece. Isso fortalece o vínculo com o espaço e garante a continuidade do cuidado."
+        },
+        {
+          "etapa": "acompanhamento", "tipo": "Avaliação", "n": "caio",
+          "q": "Que conjunto de perguntas ajuda a avaliar a qualidade da participação no acompanhamento do projeto?",
+          "alt": [
+            { "t": "Quem participa, quando participa, do que participa e quais barreiras reduzir.", "c": true },
+            { "t": "Quantas curtidas, quantos comentários e quantos compartilhamentos recebemos." },
+            { "t": "Quanto custou a obra, quanto tempo durou e quantas pessoas foram à inauguração." },
+            { "t": "Qual nota a escola recebeu, qual turma venceu e qual prêmio foi conquistado." }
+          ],
+          "e": "A qualidade da participação depende de quando as pessoas entram no processo, de quais decisões podem influenciar e de quais barreiras são enfrentadas para garantir a presença de todos."
+        }
+      ],
+      "ficha": {
+        "texto": "Roda de Escuta da Praça Viva: uma arquibancada circular à sombra do grande ipê, com tenda de diálogo, varal de ideias e bandeirolas. É o lugar onde a escuta se transforma em decisão compartilhada.",
+        "itens": ["Arquibancada circular acessível", "Ipê-amarelo da memória", "Tenda de diálogo e varal de ideias", "Canteiros com flores nativas"]
+      },
+      "encerramento": [
+        { "p": "jurema", "t": "A praça ganhou sombra e uma roda para conversar. Agora, cada projeto do bairro começa aqui, com a gente decidindo junto." }
+      ],
+      "indicadores": { "verde": 8, "agua": 2, "residuos": 6, "comunidade": 14, "economia": 2 }
+    },
+
+    {
+      "id": "agrofloresta",
+      "titulo": "Floresta que alimenta",
+      "construcao": "agrofloresta",
+      "nomeConstrucao": "Agrofloresta Comunitária",
+      "icone": "🌳",
+      "cor": "#2fbf71",
+      "lote": "B2",
+      "resumo": "Recuperar um terreno degradado com uma agrofloresta cuidada pela comunidade.",
+      "intro": [
+        { "p": "jurema", "t": "Perto do rio existe um terreno abandonado, de solo duro e exposto. Minha avó plantava ali mandioca, banana e ervas de cura. Será que a terra pode voltar a dar fruto?" },
+        { "p": "lia", "t": "Pode, sim! Uma agrofloresta comunitária combina árvores nativas, frutíferas e cultivos agrícolas no mesmo espaço, imitando a floresta e recuperando o solo." },
+        { "p": "teo", "t": "E o melhor: quem planta, colhe e cuida é a própria comunidade. Vamos planejar essa floresta de comida, etapa por etapa!" }
+      ],
+      "perguntas": [
+        {
+          "etapa": "diagnostico", "tipo": "Situação-problema", "n": "caio",
+          "q": "No diagnóstico do terreno, a turma encontrou solo compactado e sem cobertura. Que informação os moradores mais antigos podem trazer?",
+          "alt": [
+            { "t": "O histórico de uso da área, as espécies que já prosperaram ali e os saberes de cultivo.", "c": true },
+            { "t": "A cotação das frutas no mercado, que define sozinha as espécies que devem ser plantadas." },
+            { "t": "O nome das empresas de paisagismo que podem plantar tudo sem a ajuda dos vizinhos." },
+            { "t": "A previsão do tempo da semana, que é suficiente para escolher todas as espécies da área." }
+          ],
+          "e": "A memória do território também é um dado de diagnóstico. Quem viveu ali sabe o que já cresceu, por onde a água corre e quais plantas fazem parte da cultura local."
+        },
+        {
+          "etapa": "priorizacao", "tipo": "Dilema participativo", "n": "jurema",
+          "q": "A agrofloresta pode produzir alimentos, sombra e plantas medicinais. Como definir o que plantar primeiro?",
+          "alt": [
+            { "t": "A equipe técnica escolhe as espécies e afixa a lista final no portão do terreno.", "nivel": "informacao" },
+            { "t": "A equipe apresenta três listas prontas e os moradores votam na que preferirem.", "nivel": "consulta" },
+            { "t": "Moradores e estudantes fazem um mapa afetivo e decidem juntos as espécies-chave.", "nivel": "cogestao" },
+            { "t": "O grupo de agricultores do bairro conduz a escolha e organiza os próprios mutirões.", "nivel": "autonomia" }
+          ],
+          "e": "Quando as espécies são escolhidas a partir do mapa afetivo e dos saberes locais, a agrofloresta passa a ter sentido para quem vai cuidar dela, e isso garante a sua continuidade."
+        },
+        {
+          "etapa": "planejamento", "tipo": "Conceito técnico", "n": "lia",
+          "q": "Ao planejar o desenho da agrofloresta, por que as plantas são organizadas em diferentes estratos?",
+          "alt": [
+            { "t": "Para aproveitar melhor a luz, já que cada espécie ocupa uma altura diferente no sistema.", "c": true },
+            { "t": "Para facilitar o uso de agrotóxicos, já que todas as plantas ficam na mesma altura." },
+            { "t": "Para separar as espécies, já que plantas diferentes nunca devem crescer juntas na mesma área." },
+            { "t": "Para reduzir a diversidade, já que poucas espécies tornam o sistema mais resistente." }
+          ],
+          "e": "Na floresta existem plantas emergentes, altas, médias e baixas. Ocupando estratos diferentes, as espécies dividem a luz, protegem o solo e produzem mais na mesma área."
+        },
+        {
+          "etapa": "implementacao", "tipo": "Prática sustentável", "n": "teo",
+          "q": "Durante os mutirões de manejo, o que fazer com os galhos e as folhas que sobram da poda?",
+          "alt": [
+            { "t": "Picar e espalhar sobre o solo, formando uma cobertura que alimenta a vida e guarda umidade.", "c": true },
+            { "t": "Queimar em uma pilha no canto do terreno, deixando o solo limpo e totalmente exposto." },
+            { "t": "Ensacar e mandar para o aterro, para que nenhuma matéria orgânica fique no terreno." },
+            { "t": "Jogar no rio mais próximo, para que a correnteza leve os restos da poda para bem longe da área." }
+          ],
+          "e": "A poda devolve matéria orgânica ao solo. A cobertura protege contra o sol forte, reduz a erosão, mantém a umidade e alimenta minhocas, fungos e microrganismos."
+        },
+        {
+          "etapa": "acompanhamento", "tipo": "Indicadores", "n": "caio",
+          "q": "Que indicador ajuda a comunidade a acompanhar se a agrofloresta está dando certo?",
+          "alt": [
+            { "t": "A melhoria do solo, a variedade de espécies e a quantidade de alimentos partilhados.", "c": true },
+            { "t": "O número de fotos postadas, já que a visibilidade mede a saúde do sistema agrícola." },
+            { "t": "A ausência de visitantes, já que um terreno fechado mostra que o manejo foi correto." },
+            { "t": "A cor das placas instaladas, já que a sinalização revela o crescimento das árvores." }
+          ],
+          "e": "Bons indicadores unem dimensões ecológicas e sociais: solo mais vivo, mais biodiversidade, mais alimento na mesa e mais gente envolvida no cuidado."
+        }
+      ],
+      "ficha": {
+        "texto": "Agrofloresta comunitária: um sistema que imita a floresta, combinando árvores nativas, frutíferas, bananeiras e cultivos agrícolas. Ela recupera o solo, atrai polinizadores, produz alimento e cria um espaço de convivência e aprendizagem.",
+        "itens": ["Estratos emergente, alto, médio e baixo", "Cobertura do solo com a matéria da poda", "Sucessão ecológica planejada", "Mutirões de plantio e manejo"]
+      },
+      "encerramento": [
+        { "p": "jurema", "t": "Olhem só! Bananeiras, ipês e mandioca crescendo juntos, como minha avó fazia. A terra voltou a respirar." }
+      ],
+      "indicadores": { "verde": 18, "agua": 6, "residuos": 4, "comunidade": 8, "economia": 6 }
+    },
+
+    {
+      "id": "residuos",
+      "titulo": "Resíduo tem lugar",
+      "construcao": "residuos",
+      "nomeConstrucao": "Ecoponto e Gestão Participativa de Resíduos",
+      "icone": "♻️",
+      "cor": "#ffb703",
+      "lote": "C1",
+      "resumo": "Transformar a esquina do lixo em um ecoponto gerido com moradores e catadores.",
+      "intro": [
+        { "p": "jurema", "t": "Toda semana aparece um monte de lixo na esquina da escola. O caminhão passa, recolhe, e uma semana depois está tudo igual." },
+        { "p": "teo", "t": "A gente percebeu que não adianta só limpar. Precisamos entender por que o descarte acontece ali e quem pode ajudar a mudar essa história." },
+        { "p": "lia", "t": "Na gestão participativa de resíduos, moradores, escola, catadores e poder público dividem responsabilidades: reduzir, separar, reaproveitar e destinar corretamente." }
+      ],
+      "perguntas": [
+        {
+          "etapa": "diagnostico", "tipo": "Situação-problema", "n": "caio",
+          "q": "No diagnóstico, que ação revela melhor a origem do descarte irregular na esquina da escola?",
+          "alt": [
+            { "t": "Caminhar pelo bairro com moradores e catadores, mapeando horários, tipos e origens.", "c": true },
+            { "t": "Instalar uma placa de proibido jogar lixo e aguardar que o problema desapareça." },
+            { "t": "Contar apenas os sacos recolhidos, sem conversar com quem vive ou trabalha naquela rua." },
+            { "t": "Fotografar o lixo de longe e publicar as imagens para expor quem descarta ali." }
+          ],
+          "e": "O diagnóstico participativo combina dados e escuta. Caminhar com quem conhece o lugar revela horários, tipos de resíduo, falhas da coleta e os motivos do descarte."
+        },
+        {
+          "etapa": "priorizacao", "tipo": "Dilema participativo", "n": "jurema",
+          "q": "Como decidir onde instalar o novo ecoponto do bairro?",
+          "alt": [
+            { "t": "A prefeitura escolhe o local e envia um comunicado informando a data da obra.", "nivel": "informacao" },
+            { "t": "A equipe sugere dois locais possíveis e pede que os moradores votem em um deles.", "nivel": "consulta" },
+            { "t": "Moradores, catadores e escola analisam o mapa juntos e escolhem o melhor local.", "nivel": "cogestao" },
+            { "t": "A cooperativa de catadores e a associação de moradores decidem e gerem o ecoponto.", "nivel": "autonomia" }
+          ],
+          "e": "Quem vai usar e operar o ecoponto conhece os trajetos, os horários e os riscos. Decidir junto aumenta o uso correto e reduz o descarte irregular."
+        },
+        {
+          "etapa": "planejamento", "tipo": "Legislação", "n": "lia",
+          "q": "Segundo a Política Nacional de Resíduos Sólidos, qual é a ordem de prioridade na gestão dos resíduos?",
+          "alt": [
+            { "t": "Não gerar, reduzir, reutilizar, reciclar, tratar e, por último, dispor adequadamente.", "c": true },
+            { "t": "Reciclar, dispor em aterro, reduzir, reutilizar, tratar e, por último, evitar a geração." },
+            { "t": "Dispor em aterro, tratar, reciclar, reutilizar, reduzir e, por último, evitar a geração." },
+            { "t": "Tratar, reciclar, não gerar, dispor em aterro, reduzir e, por último, reutilizar tudo." }
+          ],
+          "e": "A Lei 12.305, de 2010, estabelece essa ordem: primeiro não gerar e reduzir, depois reutilizar, reciclar e tratar, e só no fim dispor os rejeitos de forma ambientalmente adequada."
+        },
+        {
+          "etapa": "implementacao", "tipo": "Inclusão social", "n": "teo",
+          "q": "Ao implementar a coleta seletiva, qual atitude valoriza os catadores do território?",
+          "alt": [
+            { "t": "Integrar a cooperativa à coleta, com renda justa, equipamentos e voz nas decisões.", "c": true },
+            { "t": "Substituir os catadores por máquinas, para que o trabalho deles fique invisível." },
+            { "t": "Pedir que os catadores trabalhem de graça, já que o projeto é para o bem da cidade." },
+            { "t": "Proibir a circulação dos catadores, para que só o caminhão faça o recolhimento." }
+          ],
+          "e": "Os catadores são agentes ambientais essenciais, e a política nacional prevê a sua inclusão. Reconhecer esse trabalho com renda e participação é justiça socioambiental."
+        },
+        {
+          "etapa": "acompanhamento", "tipo": "Indicadores", "n": "caio",
+          "q": "Que dado mostra que a gestão participativa de resíduos está funcionando ao longo do tempo?",
+          "alt": [
+            { "t": "Menos pontos de descarte irregular e mais material separado chegando à cooperativa.", "c": true },
+            { "t": "Mais sacos de lixo misturado na calçada e mais caminhões passando na mesma rua." },
+            { "t": "Mais lixeiras instaladas, mesmo que continuem vazias e sem nenhuma coleta diferenciada." },
+            { "t": "Mais multas aplicadas, mesmo que o descarte irregular continue no mesmo lugar." }
+          ],
+          "e": "O sucesso aparece na mudança de comportamento: menos pontos de descarte irregular, mais separação na fonte e mais renda para a cooperativa."
+        }
+      ],
+      "ficha": {
+        "texto": "Gestão participativa de resíduos: um ecoponto com coleta seletiva, composteira comunitária e parceria com a cooperativa de catadores. Cerca de metade do lixo doméstico brasileiro é orgânico e pode virar adubo.",
+        "itens": ["Ecoponto com as cores da coleta seletiva", "Composteira comunitária", "Parceria com a cooperativa de catadores", "Mapa colaborativo dos pontos críticos"]
+      },
+      "encerramento": [
+        { "p": "jurema", "t": "A esquina virou ponto de encontro, e não de lixo. E a dona Cida, da cooperativa, agora participa das reuniões da associação!" }
+      ],
+      "indicadores": { "verde": 4, "agua": 4, "residuos": 20, "comunidade": 8, "economia": 8 }
+    },
+
+    {
+      "id": "ecomuseu",
+      "titulo": "Memória que vive",
+      "construcao": "ecomuseu",
+      "nomeConstrucao": "Ecomuseu e Turismo de Base Comunitária",
+      "icone": "🏛️",
+      "cor": "#e76f51",
+      "lote": "B3",
+      "resumo": "Criar um museu sem paredes, em que o acervo é o próprio território.",
+      "intro": [
+        { "p": "jurema", "t": "Nosso bairro tem histórias que ninguém escreveu: o samba de roda, a antiga olaria, as lavadeiras do rio, as receitas de família. Tenho medo de que tudo isso se perca." },
+        { "p": "caio", "t": "Um ecomuseu é um museu sem paredes. O acervo é o próprio território: as pessoas, as paisagens, os saberes e as memórias." },
+        { "p": "teo", "t": "E com o turismo de base comunitária, quem visita conhece o bairro pelos olhos de quem mora aqui, e a renda fica na comunidade!" }
+      ],
+      "perguntas": [
+        {
+          "etapa": "diagnostico", "tipo": "Situação-problema", "n": "caio",
+          "q": "Qual é a melhor forma de começar o inventário do patrimônio do bairro?",
+          "alt": [
+            { "t": "Rodas de memória com moradores, registrando histórias, objetos, lugares e saberes.", "c": true },
+            { "t": "Copiar o acervo de um museu famoso da capital e expor as peças na praça do bairro." },
+            { "t": "Contratar um curador de fora, que escolhe sozinho o que merece ser lembrado ali." },
+            { "t": "Pesquisar somente na internet, já que tudo o que importa está publicado on-line." }
+          ],
+          "e": "O inventário participativo reconhece que o patrimônio é definido por quem vive o território. Histórias, objetos e lugares ganham valor quando a comunidade os nomeia."
+        },
+        {
+          "etapa": "priorizacao", "tipo": "Dilema participativo", "n": "jurema",
+          "q": "Os roteiros de visitação vão passar por casas e quintais. Como definir os percursos?",
+          "alt": [
+            { "t": "Uma agência de turismo define o roteiro e avisa os moradores da data das visitas.", "nivel": "informacao" },
+            { "t": "A equipe desenha o roteiro e pergunta aos moradores se eles concordam com ele.", "nivel": "consulta" },
+            { "t": "Moradores e estudantes percorrem o bairro juntos e desenham os roteiros possíveis.", "nivel": "cogestao" },
+            { "t": "A associação de guias locais cria, conduz e administra os roteiros de visitação.", "nivel": "autonomia" }
+          ],
+          "e": "No turismo de base comunitária, a comunidade decide o que mostrar, como mostrar e o que deve ser preservado da visitação. Isso protege a privacidade e a cultura local."
+        },
+        {
+          "etapa": "planejamento", "tipo": "Conceito", "n": "lia",
+          "q": "O que caracteriza o turismo de base comunitária?",
+          "alt": [
+            { "t": "A comunidade controla a atividade, define limites e partilha os benefícios gerados.", "c": true },
+            { "t": "Uma rede hoteleira controla a atividade e contrata moradores só como figurantes." },
+            { "t": "O turista escolhe livremente o que visitar, sem respeitar regras definidas no lugar." },
+            { "t": "O poder público controla a atividade e destina toda a renda a outras regiões." }
+          ],
+          "e": "No turismo de base comunitária, o protagonismo, a gestão e os benefícios ficam com a comunidade, que define limites para proteger o ambiente e o modo de vida local."
+        },
+        {
+          "etapa": "implementacao", "tipo": "Interdisciplinar", "n": "teo",
+          "q": "Para montar a exposição do ecomuseu, que integração de áreas enriquece a narrativa?",
+          "alt": [
+            { "t": "História oral, geografia, artes e ciências ambientais conectadas aos relatos locais.", "c": true },
+            { "t": "Somente estatística, transformando cada memória dos moradores em um gráfico isolado." },
+            { "t": "Somente arquitetura, valorizando o prédio do museu acima das pessoas do território." },
+            { "t": "Somente publicidade, criando slogans que vendem o bairro como um produto qualquer." }
+          ],
+          "e": "A memória de um lugar é ao mesmo tempo histórica, geográfica, artística e ambiental. Integrar as áreas permite contar o território de forma viva e completa."
+        },
+        {
+          "etapa": "acompanhamento", "tipo": "Indicadores", "n": "caio",
+          "q": "Como acompanhar se o turismo está beneficiando a comunidade sem prejudicá-la?",
+          "alt": [
+            { "t": "Monitorar a renda local, a satisfação dos moradores e a capacidade de carga dos locais.", "c": true },
+            { "t": "Medir somente o número de turistas, buscando sempre o maior volume possível de visitas." },
+            { "t": "Observar somente as avaliações on-line, sem ouvir os moradores que recebem visitantes." },
+            { "t": "Comparar somente com destinos famosos, copiando tudo o que dá certo em outros lugares." }
+          ],
+          "e": "Acompanhar renda, bem-estar e capacidade de carga evita que o turismo se torne um problema, garantindo benefícios duradouros para a comunidade e para o ambiente."
+        }
+      ],
+      "ficha": {
+        "texto": "Ecomuseu e turismo de base comunitária: um centro de memória com trilhas interpretativas, roteiros conduzidos por guias locais e exposições criadas pelos moradores. O patrimônio vivo gera orgulho, educação e renda.",
+        "itens": ["Inventário participativo do patrimônio", "Trilhas e roteiros com guias locais", "Exposição criada pelos moradores", "Renda que fica na comunidade"]
+      },
+      "encerramento": [
+        { "p": "jurema", "t": "Agora as crianças sabem que aquela parede de tijolos veio da nossa antiga olaria. Memória que se conta é memória que vive." }
+      ],
+      "indicadores": { "verde": 6, "agua": 2, "residuos": 2, "comunidade": 16, "economia": 12 }
+    },
+
+    {
+      "id": "urbanismo",
+      "titulo": "Rua de brincar",
+      "construcao": "urbanismo",
+      "nomeConstrucao": "Urbanismo Tático na Rua da Escola",
+      "icone": "🎨",
+      "cor": "#ff4d8d",
+      "lote": "A1",
+      "resumo": "Testar uma rua mais segura e alegre com intervenções rápidas e baratas.",
+      "intro": [
+        { "p": "teo", "t": "A rua da escola é perigosa. Os carros passam rápido e as crianças atravessam espremidas entre os veículos estacionados." },
+        { "p": "lia", "t": "O urbanismo tático propõe intervenções rápidas, baratas e reversíveis, como pintura no asfalto, vasos, bancos e parklets. Testamos agora e transformamos depois." },
+        { "p": "jurema", "t": "Gosto disso! Em vez de esperar anos por uma obra, a gente mostra na prática como a rua pode ser." }
+      ],
+      "perguntas": [
+        {
+          "etapa": "diagnostico", "tipo": "Situação-problema", "n": "caio",
+          "q": "Antes de pintar a rua, que diagnóstico torna a intervenção mais justa e segura?",
+          "alt": [
+            { "t": "Contar pedestres, medir velocidades e ouvir crianças, idosos e pessoas com deficiência.", "c": true },
+            { "t": "Escolher as cores mais bonitas e pintar no fim de semana, sem coletar dados antes." },
+            { "t": "Ouvir somente os motoristas que passam pela rua, já que eles conhecem o trânsito local." },
+            { "t": "Copiar o projeto de outra cidade, já que todas as ruas têm exatamente os mesmos problemas." }
+          ],
+          "e": "Dados de antes, como contagens e velocidades, combinados com a escuta de quem é mais vulnerável, mostram onde e como intervir, e permitem comparar os resultados depois."
+        },
+        {
+          "etapa": "priorizacao", "tipo": "Dilema participativo", "n": "jurema",
+          "q": "Qual desenho de intervenção será testado primeiro na rua da escola?",
+          "alt": [
+            { "t": "A equipe escolhe o desenho e informa à vizinhança o dia em que a rua será pintada.", "nivel": "informacao" },
+            { "t": "A equipe mostra dois desenhos prontos e os moradores votam em um deles pela internet.", "nivel": "consulta" },
+            { "t": "Estudantes, crianças e vizinhos desenham juntos em oficina e escolhem o protótipo.", "nivel": "cogestao" },
+            { "t": "O coletivo de moradores da rua cria, pinta e mantém a intervenção com apoio técnico.", "nivel": "autonomia" }
+          ],
+          "e": "Quando as crianças e os vizinhos desenham a intervenção, a rua passa a refletir quem a usa. E quem participou do desenho tende a cuidar da pintura e dos vasos."
+        },
+        {
+          "etapa": "planejamento", "tipo": "Conceito", "n": "lia",
+          "q": "Qual é a principal característica de uma ação de urbanismo tático?",
+          "alt": [
+            { "t": "Ser leve, rápida e de baixo custo, permitindo testar soluções antes de obras definitivas.", "c": true },
+            { "t": "Ser pesada, demorada e de alto custo, exigindo obras definitivas antes de qualquer teste." },
+            { "t": "Ser decidida só por especialistas, sem experimentação e sem ajustes com a vizinhança." },
+            { "t": "Ser permanente desde o início, impedindo que o desenho seja alterado após a avaliação." }
+          ],
+          "e": "O urbanismo tático funciona como um protótipo urbano: testa, mede e ajusta. Se der certo, vira obra definitiva; se não der, muda sem grande desperdício."
+        },
+        {
+          "etapa": "implementacao", "tipo": "Segurança e acessibilidade", "n": "teo",
+          "q": "Durante a pintura da rua, qual cuidado garante segurança e acessibilidade?",
+          "alt": [
+            { "t": "Sinalizar e bloquear o trecho, usar tinta antiderrapante e manter rotas acessíveis.", "c": true },
+            { "t": "Pintar com o trânsito liberado, para não atrasar a passagem dos carros pela rua." },
+            { "t": "Usar tinta lisa e brilhante, para que o desenho fique mais visível nas fotografias." },
+            { "t": "Instalar vasos sobre as rampas, para que as calçadas fiquem mais bonitas e verdes." }
+          ],
+          "e": "Segurança vem antes da estética: trecho isolado, tinta que não escorrega e rampas livres garantem que todas as pessoas, inclusive as com deficiência, circulem bem."
+        },
+        {
+          "etapa": "acompanhamento", "tipo": "Avaliação", "n": "caio",
+          "q": "Depois de um mês de intervenção, como saber se a rua ficou melhor?",
+          "alt": [
+            { "t": "Repetir as contagens e medições e comparar com os dados coletados antes da pintura.", "c": true },
+            { "t": "Perguntar somente ao artista que pintou a rua se ele ficou satisfeito com o resultado." },
+            { "t": "Considerar o projeto um sucesso, já que a rua ficou colorida e chamou muita atenção." },
+            { "t": "Remover tudo imediatamente, já que intervenções temporárias não precisam de avaliação." }
+          ],
+          "e": "Comparar o antes e o depois, com números e com a percepção de quem usa a rua, transforma o teste em evidência para pedir a obra definitiva ao poder público."
+        }
+      ],
+      "ficha": {
+        "texto": "Urbanismo tático: pintura viária lúdica, faixa de travessia destacada, vasos que estreitam a pista e um parklet com bancos de pallet, criando uma zona escolar segura. O teste orienta a futura obra definitiva.",
+        "itens": ["Pintura lúdica e antiderrapante", "Travessia segura para a escola", "Parklet com bancos e vasos", "Medição antes e depois"]
+      },
+      "encerramento": [
+        { "p": "jurema", "t": "Os carros agora diminuem a velocidade e as crianças brincam na calçada larga. Uma lata de tinta mudou a rua!" }
+      ],
+      "indicadores": { "verde": 6, "agua": 2, "residuos": 4, "comunidade": 14, "economia": 6 }
+    },
+
+    {
+      "id": "jardimChuva",
+      "titulo": "Chuva que vira vida",
+      "construcao": "jardimChuva",
+      "nomeConstrucao": "Jardim de Chuva Comunitário",
+      "icone": "🌧️",
+      "cor": "#3fa9f5",
+      "lote": "B1",
+      "resumo": "Reduzir alagamentos com um jardim que infiltra e filtra a água da chuva.",
+      "intro": [
+        { "p": "jurema", "t": "Quando chove forte, a rua de baixo vira um rio. A água entra nas casas e traz lama e doença." },
+        { "p": "lia", "t": "Um jardim de chuva é um canteiro rebaixado, com plantas e camadas de solo, que recebe a água dos telhados e das calçadas. Ele infiltra, filtra e devolve a água ao lençol freático." },
+        { "p": "teo", "t": "É uma solução baseada na natureza: bonita, barata e cheia de vida. Vamos construir com a vizinhança?" }
+      ],
+      "perguntas": [
+        {
+          "etapa": "diagnostico", "tipo": "Situação-problema", "n": "caio",
+          "q": "No diagnóstico, que informação é essencial para localizar o jardim de chuva?",
+          "alt": [
+            { "t": "O caminho da enxurrada, o tipo de solo e a capacidade de infiltração do terreno.", "c": true },
+            { "t": "A cor das fachadas vizinhas, para combinar as flores com a pintura das casas." },
+            { "t": "O ponto mais alto do bairro, longe de qualquer caminho por onde a água escorre." },
+            { "t": "A distância até o shopping, para facilitar o acesso dos visitantes de outras áreas." }
+          ],
+          "e": "O jardim precisa estar no caminho da água e em um solo capaz de infiltrá-la. Um teste simples de infiltração, feito com os moradores, já orienta o projeto."
+        },
+        {
+          "etapa": "priorizacao", "tipo": "Dilema participativo", "n": "jurema",
+          "q": "Os moradores da rua de baixo sofrem com alagamentos. Como definir onde instalar os jardins?",
+          "alt": [
+            { "t": "A equipe define os pontos no mapa e comunica a decisão em um folheto distribuído.", "nivel": "informacao" },
+            { "t": "A equipe indica três pontos possíveis e pede aos moradores que escolham um deles.", "nivel": "consulta" },
+            { "t": "Moradores mapeiam os alagamentos com a equipe e decidem juntos os pontos de obra.", "nivel": "cogestao" },
+            { "t": "A comissão de moradores atingidos lidera o projeto e cuida dos jardins depois dele.", "nivel": "autonomia" }
+          ],
+          "e": "Quem sofre com o alagamento sabe exatamente por onde a água passa. Esse conhecimento, somado ao técnico, gera decisões mais certeiras e mais justas."
+        },
+        {
+          "etapa": "planejamento", "tipo": "Conceito técnico", "n": "lia",
+          "q": "Qual composição de camadas é adequada para um jardim de chuva?",
+          "alt": [
+            { "t": "Plantas resistentes, solo com composto, uma camada de areia e brita para drenar.", "c": true },
+            { "t": "Concreto liso em todo o fundo, para impedir que a água infiltre no solo do terreno." },
+            { "t": "Somente argila compactada, para manter a água parada por várias semanas ali." },
+            { "t": "Somente grama ornamental sobre o asfalto, sem nenhuma camada de drenagem." }
+          ],
+          "e": "As camadas trabalham juntas: as plantas e o solo filtram poluentes, a areia e a brita drenam, e a água infiltra devagar, recarregando o lençol freático."
+        },
+        {
+          "etapa": "implementacao", "tipo": "Prática sustentável", "n": "teo",
+          "q": "Ao escolher as plantas do jardim de chuva, qual critério é o mais adequado?",
+          "alt": [
+            { "t": "Espécies, de preferência nativas, que toleram tanto o encharcamento quanto a seca.", "c": true },
+            { "t": "Espécies exóticas invasoras, que crescem muito rápido e ocupam todo o espaço vizinho." },
+            { "t": "Espécies que só sobrevivem em vasos fechados, protegidas de qualquer chuva." },
+            { "t": "Espécies escolhidas apenas pela cor, sem considerar a água e o solo do local." }
+          ],
+          "e": "O jardim alterna momentos encharcados e secos. Espécies nativas e resistentes exigem menos manutenção e ainda atraem polinizadores."
+        },
+        {
+          "etapa": "acompanhamento", "tipo": "Indicadores", "n": "caio",
+          "q": "No acompanhamento, que sinal mostra que o jardim de chuva funciona bem?",
+          "alt": [
+            { "t": "A água infiltra em até dois dias e a rua de baixo deixa de alagar nas chuvas.", "c": true },
+            { "t": "A água fica parada por semanas, formando uma poça permanente cheia de larvas." },
+            { "t": "As plantas são trocadas todo mês, porque nenhuma espécie consegue sobreviver." },
+            { "t": "A enxurrada aumenta na rua, levando mais terra e lixo para dentro das casas." }
+          ],
+          "e": "Um jardim de chuva bem dimensionado esvazia em até quarenta e oito horas, o que evita mosquitos. Menos alagamentos e plantas saudáveis são sinais de sucesso."
+        }
+      ],
+      "ficha": {
+        "texto": "Jardim de chuva comunitário: um canteiro rebaixado que recebe a água dos telhados e das calçadas. Camadas de vegetação, solo, areia e brita infiltram e filtram a chuva, reduzindo enchentes e recarregando o lençol freático.",
+        "itens": ["Canteiro rebaixado no caminho da água", "Camadas de solo, areia e brita", "Plantas nativas resistentes", "Esvaziamento em até 48 horas"]
+      },
+      "encerramento": [
+        { "p": "jurema", "t": "Choveu ontem e a minha rua não alagou! E ainda apareceram borboletas e passarinhos no jardim." }
+      ],
+      "indicadores": { "verde": 10, "agua": 20, "residuos": 2, "comunidade": 8, "economia": 2 }
+    },
+
+    {
+      "id": "horta",
+      "titulo": "Comida que une",
+      "construcao": "horta",
+      "nomeConstrucao": "Horta Comunitária e Cooperativa",
+      "icone": "🥬",
+      "cor": "#7bc043",
+      "lote": "A3",
+      "resumo": "Produzir alimento saudável e renda com uma horta agroecológica e cooperativa.",
+      "intro": [
+        { "p": "jurema", "t": "Muita família aqui compra verdura cara e murcha. E tem tanta gente que sabe plantar!" },
+        { "p": "teo", "t": "A ideia é criar uma horta comunitária agroecológica e uma cooperativa para vender o excedente na feira e para a merenda escolar." },
+        { "p": "lia", "t": "Uma cooperativa funciona com gestão democrática: cada pessoa associada tem um voto, independentemente de quanto investiu." }
+      ],
+      "perguntas": [
+        {
+          "etapa": "diagnostico", "tipo": "Situação-problema", "n": "caio",
+          "q": "No diagnóstico da horta, que levantamento ajuda a planejar a produção?",
+          "alt": [
+            { "t": "Os saberes de cultivo dos moradores, a disponibilidade de água e o sol no terreno.", "c": true },
+            { "t": "A marca de agrotóxico mais vendida, para garantir uma produção sem perdas na horta." },
+            { "t": "O preço das verduras importadas, ignorando o que a comunidade já sabe cultivar." },
+            { "t": "O tamanho do estacionamento vizinho, que define sozinho a área a ser plantada." }
+          ],
+          "e": "Água, sol e saberes locais são a base de uma horta viável. Mapear quem sabe plantar o quê também revela lideranças e fortalece a futura cooperativa."
+        },
+        {
+          "etapa": "priorizacao", "tipo": "Dilema participativo", "n": "jurema",
+          "q": "Como dividir os canteiros e as tarefas da horta comunitária?",
+          "alt": [
+            { "t": "A coordenação define os canteiros e cola no portão a escala de tarefas de cada um.", "nivel": "informacao" },
+            { "t": "A coordenação propõe duas formas de divisão e pede que as famílias votem em uma.", "nivel": "consulta" },
+            { "t": "Famílias, escola e equipe constroem juntas as regras de uso, tarefas e colheita.", "nivel": "cogestao" },
+            { "t": "A cooperativa de hortelões define as regras e administra a horta em assembleia.", "nivel": "autonomia" }
+          ],
+          "e": "Regras construídas coletivamente são mais respeitadas. Quando a cooperativa assume a gestão em assembleia, a horta ganha autonomia e continuidade."
+        },
+        {
+          "etapa": "planejamento", "tipo": "Conceito", "n": "lia",
+          "q": "Qual princípio orienta a gestão de uma cooperativa?",
+          "alt": [
+            { "t": "Gestão democrática, em que cada pessoa associada tem direito a um voto nas decisões.", "c": true },
+            { "t": "Gestão por capital, em que quem investe mais dinheiro tem mais votos em todas as decisões." },
+            { "t": "Gestão individual, em que o fundador decide sozinho e os demais apenas obedecem." },
+            { "t": "Gestão externa, em que uma empresa contratada toma todas as decisões do grupo." }
+          ],
+          "e": "No cooperativismo vale o princípio de uma pessoa, um voto. A cooperativa pertence a quem trabalha nela, e as decisões são tomadas em assembleia."
+        },
+        {
+          "etapa": "implementacao", "tipo": "Prática sustentável", "n": "teo",
+          "q": "Qual manejo agroecológico ajuda a controlar as pragas na horta?",
+          "alt": [
+            { "t": "Consorciar espécies, fazer rotação de culturas e atrair inimigos naturais com flores.", "c": true },
+            { "t": "Plantar uma única espécie em toda a área e aplicar veneno toda semana nos canteiros." },
+            { "t": "Retirar toda a vegetação ao redor, deixando o solo descoberto e exposto ao sol forte." },
+            { "t": "Regar em excesso todos os dias, para afogar os insetos que aparecem nos canteiros." }
+          ],
+          "e": "A diversidade é a melhor defesa: plantas consorciadas confundem as pragas, a rotação quebra os seus ciclos e as flores atraem joaninhas e outros aliados."
+        },
+        {
+          "etapa": "acompanhamento", "tipo": "Políticas públicas", "n": "caio",
+          "q": "Que política pública pode ampliar a renda da cooperativa de forma contínua?",
+          "alt": [
+            { "t": "O Programa Nacional de Alimentação Escolar, que compra da agricultura familiar.", "c": true },
+            { "t": "Um programa de crédito para comprar veneno, que aumenta a produção a todo custo." },
+            { "t": "Uma lei que proíbe as feiras livres, concentrando a venda nos supermercados." },
+            { "t": "Um imposto extra sobre as hortas urbanas, que reduz as famílias produtoras." }
+          ],
+          "e": "Pela Lei 11.947, de 2009, pelo menos trinta por cento dos recursos federais da alimentação escolar devem ser usados na compra de alimentos da agricultura familiar."
+        }
+      ],
+      "ficha": {
+        "texto": "Hortas comunitárias e cooperativas: canteiros agroecológicos, composteira, sementes crioulas e uma banca da cooperativa. A produção abastece as famílias, a feira e a merenda escolar, com gestão democrática.",
+        "itens": ["Canteiros agroecológicos consorciados", "Sementes crioulas e compostagem", "Cooperativa com um voto por pessoa", "Venda para a feira e a merenda escolar"]
+      },
+      "encerramento": [
+        { "p": "jurema", "t": "Hoje a merenda tem alface da nossa horta! E a cooperativa já tem doze famílias associadas." }
+      ],
+      "indicadores": { "verde": 12, "agua": 4, "residuos": 6, "comunidade": 12, "economia": 14 }
+    },
+
+    {
+      "id": "circular",
+      "titulo": "Nada se perde",
+      "construcao": "circular",
+      "nomeConstrucao": "Centro de Economia Circular Participativa",
+      "icone": "🔄",
+      "cor": "#00b4d8",
+      "lote": "C3",
+      "resumo": "Consertar, trocar e compartilhar para que os materiais circulem no bairro.",
+      "intro": [
+        { "p": "teo", "t": "Sabe aquela geladeira que quebrou e foi parar na calçada? E as roupas que ninguém usa mais? Tudo isso ainda tem valor." },
+        { "p": "lia", "t": "Na economia circular, mantemos produtos e materiais em uso pelo maior tempo possível: consertando, trocando, compartilhando e redesenhando." },
+        { "p": "jurema", "t": "Antigamente era assim mesmo: a gente consertava, emprestava e trocava. Vamos trazer isso de volta, com organização!" }
+      ],
+      "perguntas": [
+        {
+          "etapa": "diagnostico", "tipo": "Situação-problema", "n": "caio",
+          "q": "Que diagnóstico revela as oportunidades de economia circular no bairro?",
+          "alt": [
+            { "t": "Mapear objetos descartados, habilidades de conserto e necessidades das famílias.", "c": true },
+            { "t": "Contar quantas lojas vendem produtos novos e incentivar compras toda semana." },
+            { "t": "Medir apenas o peso do lixo, sem saber o que poderia ser reparado ou trocado." },
+            { "t": "Listar as marcas mais caras, para descobrir o que os vizinhos gostariam de comprar." }
+          ],
+          "e": "Cruzar o que é descartado, quem sabe consertar e do que as famílias precisam revela conexões: o que sobra para um pode ser exatamente o que falta para outro."
+        },
+        {
+          "etapa": "priorizacao", "tipo": "Dilema participativo", "n": "jurema",
+          "q": "O bairro quer criar um centro de trocas e consertos. Como definir o funcionamento?",
+          "alt": [
+            { "t": "A equipe define horários e regras e publica um cartaz com o funcionamento do centro.", "nivel": "informacao" },
+            { "t": "A equipe apresenta um regulamento pronto e abre uma enquete para ajustes pontuais.", "nivel": "consulta" },
+            { "t": "Vizinhos, artesãos e estudantes constroem juntos as regras, os horários e as tarefas.", "nivel": "cogestao" },
+            { "t": "Um coletivo de moradores gere o centro, decide em roda e forma novos voluntários.", "nivel": "autonomia" }
+          ],
+          "e": "Um centro de trocas vive da confiança. Regras feitas em conjunto e uma gestão coletiva garantem que ele continue funcionando mesmo depois do fim do projeto escolar."
+        },
+        {
+          "etapa": "planejamento", "tipo": "Conceito", "n": "lia",
+          "q": "Qual alternativa expressa um princípio da economia circular?",
+          "alt": [
+            { "t": "Projetar produtos duráveis e reparáveis, mantendo os materiais em uso por mais tempo.", "c": true },
+            { "t": "Projetar produtos descartáveis, garantindo que sejam trocados por novos com frequência." },
+            { "t": "Extrair mais matéria-prima, fabricar, usar uma única vez e depois descartar no aterro." },
+            { "t": "Dificultar o conserto, para que comprar um produto novo seja sempre mais vantajoso." }
+          ],
+          "e": "A economia circular elimina o desperdício desde o projeto, mantém produtos e materiais circulando e regenera a natureza, ao contrário do modelo de extrair, usar e descartar."
+        },
+        {
+          "etapa": "implementacao", "tipo": "Prática sustentável", "n": "teo",
+          "q": "Qual iniciativa fortalece a economia circular de forma participativa?",
+          "alt": [
+            { "t": "Um café de reparos mensal, em que vizinhos ensinam e aprendem a consertar objetos.", "c": true },
+            { "t": "Uma liquidação mensal, em que vizinhos compram mais produtos novos e descartáveis." },
+            { "t": "Uma caçamba mensal, em que vizinhos descartam objetos sem qualquer triagem prévia." },
+            { "t": "Uma rifa mensal, em que vizinhos sorteiam aparelhos novos de uma grande empresa." }
+          ],
+          "e": "No café de reparos, o conserto vira encontro e aprendizagem. O objeto ganha vida nova, o saber circula e o resíduo deixa de ir para o aterro."
+        },
+        {
+          "etapa": "acompanhamento", "tipo": "Indicadores", "n": "caio",
+          "q": "Que indicadores ajudam a acompanhar o centro de trocas e consertos?",
+          "alt": [
+            { "t": "Objetos reparados, quilos desviados do aterro e pessoas que aprenderam a consertar.", "c": true },
+            { "t": "Objetos vendidos, quilos de embalagens compradas e lojas novas abertas em todo o bairro." },
+            { "t": "Objetos descartados, quilos enviados ao aterro e caçambas cheias a cada semana." },
+            { "t": "Objetos importados, quilos de produtos novos e propagandas exibidas no bairro." }
+          ],
+          "e": "Indicadores circulares medem o que deixou de virar lixo e o que a comunidade aprendeu. Eles mostram o impacto ambiental, econômico e social ao mesmo tempo."
+        }
+      ],
+      "ficha": {
+        "texto": "Economia circular participativa: um centro comunitário com café de reparos, feira de trocas, biblioteca de objetos e banco de materiais. Cada objeto consertado é dinheiro que fica no bairro e resíduo que não vai para o aterro.",
+        "itens": ["Café de reparos mensal", "Feira de trocas e biblioteca de objetos", "Banco comunitário de materiais", "Saberes que circulam entre gerações"]
+      },
+      "encerramento": [
+        { "p": "jurema", "t": "Meu liquidificador voltou a funcionar no café de reparos, e eu ensinei três jovens a costurar. Isso é riqueza que circula!" }
+      ],
+      "indicadores": { "verde": 4, "agua": 2, "residuos": 16, "comunidade": 12, "economia": 14 }
+    },
+
+    {
+      "id": "saneamento",
+      "titulo": "Saneamento é dignidade",
+      "construcao": "saneamento",
+      "nomeConstrucao": "Ecofossas e Saneamento Ecológico",
+      "icone": "🍌",
+      "cor": "#f4a261",
+      "lote": "D2",
+      "resumo": "Tratar o esgoto no próprio lugar com soluções ecológicas e mutirões.",
+      "intro": [
+        { "p": "jurema", "t": "Na parte alta do bairro, várias casas não têm rede de esgoto. O esgoto escorre a céu aberto até o rio." },
+        { "p": "lia", "t": "O saneamento ecológico oferece soluções descentralizadas, como o tanque de evapotranspiração, o círculo de bananeiras e o banheiro seco, que tratam os resíduos no próprio local." },
+        { "p": "caio", "t": "Saneamento é saúde, é dignidade e é direito. E pode ser construído com a comunidade, aprendendo junto em mutirão." }
+      ],
+      "perguntas": [
+        {
+          "etapa": "diagnostico", "tipo": "Situação-problema", "n": "caio",
+          "q": "Qual levantamento é indispensável antes de instalar uma ecofossa?",
+          "alt": [
+            { "t": "O tipo de solo, o nível do lençol freático e a distância até poços e nascentes.", "c": true },
+            { "t": "A cor do azulejo do banheiro, para combinar o tanque com o acabamento da casa." },
+            { "t": "O modelo do telhado da casa, sem considerar o solo nem a água subterrânea dali." },
+            { "t": "A opinião dos vizinhos sobre a fachada, sem considerar o solo nem a água local." }
+          ],
+          "e": "O solo e a água subterrânea definem qual solução é segura. Manter distância de poços e nascentes evita contaminar a água que as famílias consomem."
+        },
+        {
+          "etapa": "priorizacao", "tipo": "Dilema participativo", "n": "jurema",
+          "q": "Quais casas recebem primeiro as ecofossas no mutirão?",
+          "alt": [
+            { "t": "A equipe define a lista de casas e comunica a ordem em um aviso na associação.", "nivel": "informacao" },
+            { "t": "A equipe apresenta uma lista pronta e pergunta aos moradores se há objeções.", "nivel": "consulta" },
+            { "t": "Moradores e equipe definem juntos critérios de prioridade, como saúde e risco.", "nivel": "cogestao" },
+            { "t": "A comissão de saneamento dos moradores define a ordem e coordena os mutirões.", "nivel": "autonomia" }
+          ],
+          "e": "Critérios construídos em conjunto, como presença de crianças, idosos, doenças ou risco de contaminação, tornam a prioridade transparente e justa para todos."
+        },
+        {
+          "etapa": "planejamento", "tipo": "Conceito técnico", "n": "lia",
+          "q": "Como funciona o tanque de evapotranspiração, conhecido como TEVAP?",
+          "alt": [
+            { "t": "Recebe as águas do vaso sanitário, que são decompostas e absorvidas pelas plantas.", "c": true },
+            { "t": "Recebe as águas do vaso sanitário e as lança diretamente no rio mais próximo dali." },
+            { "t": "Recebe somente a água da chuva, que é guardada para lavar calçadas e quintais." },
+            { "t": "Recebe o lixo seco da casa, que é queimado dentro do tanque para virar adubo." }
+          ],
+          "e": "No TEVAP, um tanque impermeável recebe as águas do vaso sanitário. Bactérias decompõem a matéria, e plantas como bananeiras absorvem a água e os nutrientes, devolvendo vapor ao ar."
+        },
+        {
+          "etapa": "implementacao", "tipo": "Prática sustentável", "n": "teo",
+          "q": "O círculo de bananeiras é indicado para tratar qual tipo de efluente?",
+          "alt": [
+            { "t": "Águas cinzas, como as da pia, do chuveiro e do tanque de lavar roupas da casa.", "c": true },
+            { "t": "Águas da chuva do telhado, que devem ser guardadas para beber sem nenhum filtro." },
+            { "t": "Óleo de cozinha usado, que deve ser despejado direto no buraco das bananeiras." },
+            { "t": "Resíduos de tinta e solvente, que as raízes das bananeiras conseguem neutralizar." }
+          ],
+          "e": "O círculo de bananeiras recebe as águas cinzas, que passam pela matéria orgânica e são aproveitadas pelas plantas. Óleo, tinta e solventes nunca devem ir para o sistema."
+        },
+        {
+          "etapa": "acompanhamento", "tipo": "Indicadores", "n": "caio",
+          "q": "Como acompanhar os benefícios do saneamento ecológico na comunidade?",
+          "alt": [
+            { "t": "Observar a redução de doenças, de esgoto a céu aberto e de mau cheiro perto do rio.", "c": true },
+            { "t": "Contar quantas bananas foram vendidas na feira, sem avaliar a saúde dos moradores." },
+            { "t": "Medir o tamanho das obras, sem verificar se o esgoto deixou mesmo de chegar até o rio." },
+            { "t": "Registrar quantas fotos foram feitas, sem perguntar como os moradores estão." }
+          ],
+          "e": "O Marco Legal do Saneamento prevê que, até 2033, noventa por cento da população tenha coleta e tratamento de esgoto. Soluções ecológicas e participativas ajudam a chegar lá."
+        }
+      ],
+      "ficha": {
+        "texto": "Ecofossas e saneamento ecológico: tanque de evapotranspiração para as águas do vaso sanitário, círculo de bananeiras para as águas cinzas e banheiro seco compostável. Tratamento no próprio local, sem poluir o rio.",
+        "itens": ["Tanque de evapotranspiração, o TEVAP", "Círculo de bananeiras para águas cinzas", "Banheiro seco compostável", "Mutirões de construção e aprendizagem"]
+      },
+      "encerramento": [
+        { "p": "jurema", "t": "O cheiro ruim sumiu e as crianças voltaram a brincar no quintal. E as bananas estão uma delícia!" }
+      ],
+      "indicadores": { "verde": 8, "agua": 16, "residuos": 6, "comunidade": 8, "economia": 4 }
+    },
+
+    {
+      "id": "moradia",
+      "titulo": "Casa boa é direito",
+      "construcao": "moradia",
+      "nomeConstrucao": "Arquitetura Social e Reforma de Moradias",
+      "icone": "🏠",
+      "cor": "#ff6b6b",
+      "lote": "D1",
+      "resumo": "Reformar moradias com assistência técnica gratuita e participação das famílias.",
+      "intro": [
+        { "p": "jurema", "t": "Muitas casas daqui têm mofo, pouca luz e pouca ventilação. A dona Lurdes tem asma, e a casa dela fica úmida o ano inteiro." },
+        { "p": "lia", "t": "A arquitetura social leva assistência técnica gratuita para famílias de baixa renda. No Brasil, esse direito está garantido pela Lei de Assistência Técnica para Habitação de Interesse Social." },
+        { "p": "teo", "t": "E a reforma é feita com as famílias, ouvindo como cada uma vive a sua casa. Bora melhorar essas moradias?" }
+      ],
+      "perguntas": [
+        {
+          "etapa": "diagnostico", "tipo": "Situação-problema", "n": "caio",
+          "q": "Como realizar o diagnóstico das moradias de forma participativa?",
+          "alt": [
+            { "t": "Visitar casa a casa com as famílias, mapeando umidade, luz, ventilação e riscos.", "c": true },
+            { "t": "Avaliar só as fachadas pela rua, sem entrar nas casas nem conversar com as famílias." },
+            { "t": "Usar uma planta padrão para todas as casas, ignorando como cada família vive ali." },
+            { "t": "Escolher as casas pela aparência das fotos, sem visitar nem ouvir os moradores." }
+          ],
+          "e": "Cada casa tem uma história e uma rotina. A visita com a família revela problemas invisíveis da rua, como mofo atrás dos móveis ou cômodos sem janela."
+        },
+        {
+          "etapa": "priorizacao", "tipo": "Dilema participativo", "n": "jurema",
+          "q": "Como definir as prioridades de reforma de cada casa?",
+          "alt": [
+            { "t": "A equipe técnica decide as obras e entrega à família o cronograma já fechado.", "nivel": "informacao" },
+            { "t": "A equipe técnica apresenta duas opções de reforma e a família escolhe uma delas.", "nivel": "consulta" },
+            { "t": "A família e a equipe desenham juntas a reforma, a partir das necessidades reais.", "nivel": "cogestao" },
+            { "t": "As famílias organizadas em associação conduzem as obras com apoio técnico.", "nivel": "autonomia" }
+          ],
+          "e": "Quando a família participa do desenho, a reforma atende ao que realmente importa para ela, e o conhecimento técnico se soma ao conhecimento de quem mora."
+        },
+        {
+          "etapa": "planejamento", "tipo": "Legislação", "n": "lia",
+          "q": "O que garante a Lei 11.888, de 2008?",
+          "alt": [
+            { "t": "Assistência técnica pública e gratuita para a moradia de famílias de baixa renda.", "c": true },
+            { "t": "Isenção de impostos para construtoras de condomínios de luxo nas grandes cidades." },
+            { "t": "Proibição de qualquer reforma nas casas construídas pelas próprias famílias." },
+            { "t": "Venda obrigatória de terrenos públicos para as empresas do setor imobiliário." }
+          ],
+          "e": "A Lei 11.888, de 2008, assegura às famílias de baixa renda assistência técnica pública e gratuita para o projeto e a construção da habitação de interesse social."
+        },
+        {
+          "etapa": "implementacao", "tipo": "Conforto ambiental", "n": "teo",
+          "q": "Que solução de reforma combate o mofo e melhora a saúde da família?",
+          "alt": [
+            { "t": "Abrir janelas para ventilação cruzada, impermeabilizar paredes e ampliar a luz natural.", "c": true },
+            { "t": "Fechar todas as janelas, pintar o mofo com tinta escura e manter a casa sempre bem fechada." },
+            { "t": "Instalar um carpete grosso no chão, que absorve toda a umidade das paredes do cômodo." },
+            { "t": "Cobrir as paredes com papel de parede, escondendo as manchas sem tratar a umidade." }
+          ],
+          "e": "Ventilação cruzada renova o ar, a luz do sol seca os ambientes e a impermeabilização corta a origem da umidade. É saúde construída com tijolo e janela."
+        },
+        {
+          "etapa": "acompanhamento", "tipo": "Avaliação", "n": "caio",
+          "q": "Como avaliar se a reforma melhorou a vida das famílias?",
+          "alt": [
+            { "t": "Ouvir as famílias após a mudança, registrando saúde, conforto e uso dos cômodos.", "c": true },
+            { "t": "Fotografar apenas a fachada pintada, sem conversar com as famílias que moram ali." },
+            { "t": "Calcular só o valor gasto em material, sem considerar o conforto dos moradores." },
+            { "t": "Comparar com casas de revista, sem considerar as necessidades de cada família." }
+          ],
+          "e": "A avaliação pós-ocupação escuta quem vive na casa. Ela mostra o que funcionou, o que precisa de ajuste e orienta as próximas reformas do bairro."
+        }
+      ],
+      "ficha": {
+        "texto": "Arquitetura social e reforma de moradias: assistência técnica gratuita, mutirões de reforma, ventilação cruzada, luz natural, aquecimento solar da água e cores escolhidas pelas famílias. Morar bem é um direito.",
+        "itens": ["Assistência técnica gratuita, Lei 11.888", "Ventilação cruzada e luz natural", "Aquecedor solar de água", "Projeto desenhado com cada família"]
+      },
+      "encerramento": [
+        { "p": "jurema", "t": "A casa da dona Lurdes agora tem janela grande e sol na sala. Ela me disse que respira melhor, e eu quase chorei de alegria." }
+      ],
+      "indicadores": { "verde": 4, "agua": 6, "residuos": 4, "comunidade": 14, "economia": 8 }
+    },
+
+    {
+      "id": "oficina",
+      "titulo": "Mãos que transformam",
+      "construcao": "oficina",
+      "nomeConstrucao": "Oficinas de Reaproveitamento",
+      "icone": "🛠️",
+      "cor": "#c77dff",
+      "lote": "C2",
+      "resumo": "Dar nova função a pallets, madeiras e tecidos, gerando saberes e renda.",
+      "intro": [
+        { "p": "teo", "t": "Tem muito pallet, madeira de obra e tecido sobrando no bairro. Dá para transformar tudo isso em bancos, brinquedos e até em renda." },
+        { "p": "lia", "t": "Nas oficinas de reaproveitamento, aprendemos marcenaria, costura e técnicas de reúso com segurança, dando nova função ao que seria descartado." },
+        { "p": "jurema", "t": "E quem ensina pode ser o seu Zé marceneiro, a dona Nena costureira... O saber já está aqui no bairro!" }
+      ],
+      "perguntas": [
+        {
+          "etapa": "diagnostico", "tipo": "Situação-problema", "n": "caio",
+          "q": "No diagnóstico das oficinas, o que é importante mapear?",
+          "alt": [
+            { "t": "Os materiais disponíveis, os saberes dos moradores e os produtos que o bairro precisa.", "c": true },
+            { "t": "As ferramentas mais caras do mercado, mesmo sem saber quem vai utilizá-las ali." },
+            { "t": "As tendências de decoração estrangeiras, sem nenhuma relação com as demandas do bairro." },
+            { "t": "Somente os materiais novos de loja, descartando o que já existe no território." }
+          ],
+          "e": "O mapeamento une três pontas: o que sobra, quem sabe fazer e o que falta. Assim, as oficinas produzem o que o bairro realmente precisa."
+        },
+        {
+          "etapa": "priorizacao", "tipo": "Dilema participativo", "n": "jurema",
+          "q": "Como escolher os primeiros produtos que as oficinas vão fabricar?",
+          "alt": [
+            { "t": "A equipe escolhe os produtos e divulga a programação das oficinas no grupo do bairro.", "nivel": "informacao" },
+            { "t": "A equipe sugere uma lista de produtos e os participantes votam nos seus preferidos.", "nivel": "consulta" },
+            { "t": "Mestres locais, jovens e equipe definem juntos os produtos e o plano das aulas.", "nivel": "cogestao" },
+            { "t": "O coletivo de artesãos do bairro escolhe, produz e comercializa os próprios produtos.", "nivel": "autonomia" }
+          ],
+          "e": "Valorizar os mestres locais nas decisões reconhece o saber popular e cria pontes entre gerações. E um coletivo autônomo transforma a oficina em fonte de renda duradoura."
+        },
+        {
+          "etapa": "planejamento", "tipo": "Segurança", "n": "lia",
+          "q": "Ao reaproveitar pallets de madeira, que marcação indica um tratamento mais seguro?",
+          "alt": [
+            { "t": "A sigla HT, que indica tratamento térmico, sem o uso de produtos químicos tóxicos.", "c": true },
+            { "t": "A sigla MB, que indica fumigação com brometo de metila, uma substância tóxica." },
+            { "t": "Qualquer pallet pintado, já que a tinta elimina todos os riscos de contaminação química." },
+            { "t": "Qualquer pallet molhado, já que a umidade indica madeira nova e mais resistente." }
+          ],
+          "e": "A marcação HT significa heat treatment, ou seja, tratamento térmico. Pallets com a sigla MB foram fumigados com brometo de metila e não devem ser usados em móveis."
+        },
+        {
+          "etapa": "implementacao", "tipo": "Conceito", "n": "teo",
+          "q": "Qual é a diferença entre reaproveitar e reciclar um material?",
+          "alt": [
+            { "t": "Reaproveitar dá nova função ao objeto; reciclar transforma a sua matéria-prima.", "c": true },
+            { "t": "Reaproveitar destrói o objeto; reciclar mantém o objeto exatamente como estava." },
+            { "t": "Reaproveitar exige indústria pesada; reciclar se faz só com as mãos, em casa." },
+            { "t": "Reaproveitar e reciclar são sinônimos, sem diferença de processo ou de energia." }
+          ],
+          "e": "No reaproveitamento, o pallet vira banco sem deixar de ser madeira. Na reciclagem, o material é processado e vira matéria-prima, o que geralmente gasta mais energia."
+        },
+        {
+          "etapa": "acompanhamento", "tipo": "Indicadores", "n": "caio",
+          "q": "Como acompanhar o impacto das oficinas no bairro?",
+          "alt": [
+            { "t": "Registrar materiais reaproveitados, pessoas formadas e renda gerada pelos produtos.", "c": true },
+            { "t": "Registrar apenas o número de selfies, sem medir a aprendizagem nem a renda gerada." },
+            { "t": "Registrar apenas as ferramentas compradas, sem avaliar quem aprendeu o ofício." },
+            { "t": "Registrar apenas as reclamações de barulho, sem medir os resultados reais das oficinas." }
+          ],
+          "e": "Bons indicadores mostram o impacto ambiental, o educativo e o econômico: o que deixou de ser lixo, quem aprendeu um ofício e quanto de renda ficou no bairro."
+        }
+      ],
+      "ficha": {
+        "texto": "Oficinas de reaproveitamento: marcenaria com pallets e madeira de obra, costura com retalhos, uso seguro de ferramentas e equipamentos de proteção. Os produtos mobiliam a praça e geram renda para jovens e mestres do bairro.",
+        "itens": ["Marcenaria com pallets tratados HT", "Costura com retalhos", "Equipamentos de proteção individual", "Mestres locais como educadores"]
+      },
+      "encerramento": [
+        { "p": "jurema", "t": "Os bancos da praça foram feitos pelos meninos e meninas da oficina. Sentar neles tem outro gosto!" }
+      ],
+      "indicadores": { "verde": 2, "agua": 2, "residuos": 14, "comunidade": 12, "economia": 12 }
+    },
+
+    {
+      "id": "predioVerde",
+      "titulo": "Prédio que respira",
+      "construcao": "predioVerde",
+      "nomeConstrucao": "Prédio com Certificação Verde",
+      "icone": "🏢",
+      "cor": "#06d6a0",
+      "lote": "A2",
+      "resumo": "Reformar a escola técnica como edifício modelo, monitorado pelos próprios usuários.",
+      "intro": [
+        { "p": "lia", "t": "O antigo prédio da escola técnica vai ser reformado. É a chance de criar um edifício modelo, com certificação verde." },
+        { "p": "caio", "t": "Mas atenção: um prédio verde não é só tecnologia. Ele precisa ser compreendido, usado e cuidado pelas pessoas que convivem nele." },
+        { "p": "teo", "t": "Painel solar, telhado verde, reúso de água... e uma comissão de estudantes monitorando tudo. Vamos nessa!" }
+      ],
+      "perguntas": [
+        {
+          "etapa": "diagnostico", "tipo": "Situação-problema", "n": "caio",
+          "q": "No diagnóstico para a reforma do prédio, o que deve ser levantado?",
+          "alt": [
+            { "t": "O consumo de água e energia, o conforto térmico e a percepção de quem usa o prédio.", "c": true },
+            { "t": "Apenas a cor da fachada, já que a aparência define sozinha a certificação ambiental." },
+            { "t": "Apenas o preço de mercado do imóvel, ignorando o conforto e o consumo atual dele." },
+            { "t": "Apenas a opinião da construtora, sem medir o consumo nem ouvir os usuários dali." }
+          ],
+          "e": "Medir o consumo e ouvir os usuários revela onde estão os desperdícios e os desconfortos. Esses dados orientam as melhores soluções de reforma."
+        },
+        {
+          "etapa": "priorizacao", "tipo": "Dilema participativo", "n": "jurema",
+          "q": "Como decidir quais tecnologias sustentáveis serão priorizadas no prédio?",
+          "alt": [
+            { "t": "A diretoria escolhe as tecnologias e apresenta o projeto pronto na reunião anual.", "nivel": "informacao" },
+            { "t": "A diretoria lista as tecnologias possíveis e abre uma votação entre os estudantes.", "nivel": "consulta" },
+            { "t": "Estudantes, funcionários, vizinhos e técnicos priorizam juntos, com base nos dados.", "nivel": "cogestao" },
+            { "t": "A comissão de usuários do prédio define, acompanha e ajusta as tecnologias adotadas.", "nivel": "autonomia" }
+          ],
+          "e": "Tecnologia só funciona quando é bem usada. Decidir junto, a partir de dados, cria compromisso com a operação e a manutenção do prédio."
+        },
+        {
+          "etapa": "planejamento", "tipo": "Conceito", "n": "lia",
+          "q": "Qual destes é um exemplo de selo de construção sustentável usado no Brasil?",
+          "alt": [
+            { "t": "O Selo Casa Azul, da Caixa, que avalia critérios socioambientais das construções.", "c": true },
+            { "t": "O selo de inspeção sanitária, que avalia a qualidade da carne vendida no comércio." },
+            { "t": "O selo de pureza do café, que avalia a qualidade dos grãos torrados e moídos no país." },
+            { "t": "O certificado de reservista, que comprova o serviço militar obrigatório no país." }
+          ],
+          "e": "Além do Selo Casa Azul, o Brasil usa certificações como LEED, AQUA-HQE, EDGE e o selo Procel Edificações, que avaliam água, energia, materiais e conforto."
+        },
+        {
+          "etapa": "implementacao", "tipo": "Conceito técnico", "n": "teo",
+          "q": "Que conjunto de soluções reduz o consumo de recursos do prédio?",
+          "alt": [
+            { "t": "Captação de chuva, reúso de água, energia solar, ventilação e iluminação naturais.", "c": true },
+            { "t": "Vidros escuros em toda a fachada, ar-condicionado ligado e lâmpadas acesas o dia todo." },
+            { "t": "Torneiras sem regulagem, descargas de alto volume e piso impermeável em todo o lote." },
+            { "t": "Fachada toda envidraçada e sem proteção solar, aumentando o calor dentro das salas." }
+          ],
+          "e": "Água da chuva e reúso economizam água potável; o sol gera energia; a ventilação e a luz natural reduzem o uso de ar-condicionado e de lâmpadas."
+        },
+        {
+          "etapa": "acompanhamento", "tipo": "Avaliação", "n": "caio",
+          "q": "Depois da certificação, o que garante que o prédio continue sustentável?",
+          "alt": [
+            { "t": "Monitorar o consumo com os usuários e fazer avaliações pós-ocupação periódicas.", "c": true },
+            { "t": "Pendurar a placa da certificação na entrada e não acompanhar mais os indicadores." },
+            { "t": "Desligar os sensores após a vistoria, para economizar com a manutenção do sistema." },
+            { "t": "Proibir os usuários de opinar, já que os técnicos sabem o que é melhor para todos." }
+          ],
+          "e": "Certificação é ponto de partida, não de chegada. O monitoramento participativo transforma a tecnologia em cultura de cuidado com a água e a energia."
+        }
+      ],
+      "ficha": {
+        "texto": "Prédio com certificação verde: telhado verde, painéis fotovoltaicos, captação da água da chuva, reúso de águas cinzas, brises e jardins verticais. Com monitoramento participativo, a tecnologia vira cultura.",
+        "itens": ["Telhado verde e jardim vertical", "Energia solar fotovoltaica", "Captação de chuva e reúso", "Monitoramento feito pelos usuários"]
+      },
+      "encerramento": [
+        { "p": "jurema", "t": "Os estudantes mostram no painel quanta energia o sol gerou hoje. Até eu aprendi o que é quilowatt-hora!" }
+      ],
+      "indicadores": { "verde": 10, "agua": 12, "residuos": 6, "comunidade": 8, "economia": 10 }
+    },
+
+    {
+      "id": "conselho",
+      "titulo": "Conselho do Território",
+      "construcao": "conselho",
+      "nomeConstrucao": "Casa do Conselho do Território",
+      "icone": "🧭",
+      "cor": "#ffd23f",
+      "lote": "D3",
+      "final": true,
+      "minimo": 6,
+      "resumo": "Missão final: o Mapa Interdisciplinar de Participação do Projeto Praça Viva.",
+      "intro": [
+        { "p": "caio", "t": "Chegou a hora de reunir tudo. Vamos construir o Mapa Interdisciplinar de Participação do Projeto Praça Viva, pensando em cada momento do projeto." },
+        { "p": "jurema", "t": "E a Casa do Conselho vai ser o lugar onde o bairro decide junto, com espaço para todos, inclusive para quem nunca teve voz." },
+        { "p": "lia", "t": "Cada etapa tem perguntas-chave: quem participa, quando participa, do que participa e quais barreiras precisam ser reduzidas." },
+        { "p": "teo", "t": "É a missão final. Bora mostrar tudo o que a gente aprendeu!" }
+      ],
+      "perguntas": [
+        {
+          "etapa": "diagnostico", "tipo": "Mapa de participação", "n": "caio",
+          "q": "No Mapa Interdisciplinar de Participação, como deve ser a participação na etapa de diagnóstico?",
+          "alt": [
+            { "t": "Moradores e diferentes áreas leem juntos o território, antes de definir as soluções.", "c": true },
+            { "t": "A equipe técnica faz o diagnóstico sozinha e depois apresenta o resultado pronto." },
+            { "t": "Os moradores só participam depois que todas as propostas já foram escolhidas pela escola." },
+            { "t": "O diagnóstico é dispensado, já que todos já sabem quais são os problemas da praça." }
+          ],
+          "e": "Quando a comunidade entra no diagnóstico, ela ajuda a definir o próprio problema. Isso muda tudo o que vem depois: as prioridades, o plano e a forma de avaliar."
+        },
+        {
+          "etapa": "priorizacao", "tipo": "Dilema participativo", "n": "jurema",
+          "q": "Muitos moradores trabalham durante o dia e não conseguem ir às reuniões. O que fazer?",
+          "alt": [
+            { "t": "Gravar a reunião e enviar o vídeo depois, para que os ausentes saibam o que foi decidido.", "nivel": "informacao" },
+            { "t": "Enviar um formulário aos ausentes, pedindo que escolham entre as opções já debatidas.", "nivel": "consulta" },
+            { "t": "Mudar horários e locais, oferecer cuidado infantil e incluir quem faltou nas decisões.", "nivel": "cogestao" },
+            { "t": "Apoiar comissões de rua que se reúnem quando podem e levam as decisões ao conselho.", "nivel": "autonomia" }
+          ],
+          "e": "Reduzir barreiras faz parte da participação. Horários acessíveis, cuidado com as crianças e comissões de rua garantem que mais vozes cheguem às decisões."
+        },
+        {
+          "etapa": "planejamento", "tipo": "Interdisciplinar", "n": "lia",
+          "q": "Por que integrar as contribuições das áreas, em vez de analisá-las separadamente?",
+          "alt": [
+            { "t": "Porque os problemas do território são complexos e pedem soluções que conectam saberes.", "c": true },
+            { "t": "Porque cada área deve competir com as outras para provar que é a mais importante delas." },
+            { "t": "Porque a integração dispensa a participação da comunidade nas decisões do projeto." },
+            { "t": "Porque analisar separadamente sempre produz soluções mais completas e mais justas." }
+          ],
+          "e": "Arborização, resíduos e convivência estão ligados. Integrar as áreas produz uma solução que uma única área dificilmente construiria sozinha."
+        },
+        {
+          "etapa": "implementacao", "tipo": "Decisão pedagógica", "n": "teo",
+          "q": "Qual pergunta ajuda os estudantes a integrar as áreas do conhecimento durante o projeto?",
+          "alt": [
+            { "t": "Como os saberes da ecologia, da saúde e dos moradores mudam juntos a nossa solução?", "c": true },
+            { "t": "Qual área do conhecimento acertou mais respostas na avaliação final do bimestre?" },
+            { "t": "Quantas páginas cada área deve escrever no relatório final, separadamente das outras?" },
+            { "t": "Quem terminou a sua parte primeiro, sem precisar conversar com os outros grupos?" }
+          ],
+          "e": "Uma boa pergunta integradora obriga as áreas a dialogarem entre si e com a comunidade. Ela transforma partes separadas em uma solução única."
+        },
+        {
+          "etapa": "acompanhamento", "tipo": "Arremate", "n": "caio",
+          "q": "Para que uma atividade sobre projetos socioambientais ensine participação, e não apenas consulta, ela precisa...",
+          "alt": [
+            { "t": "Garantir que a comunidade influencie as decisões, do diagnóstico até a avaliação.", "c": true },
+            { "t": "Garantir que a comunidade vote no fim, escolhendo entre opções preparadas antes." },
+            { "t": "Garantir que a comunidade seja informada por cartazes sobre tudo o que foi decidido." },
+            { "t": "Garantir que a comunidade assista às apresentações, sem precisar interferir nelas." }
+          ],
+          "e": "Ouvir, envolver, compartilhar decisões e construir junto. Um projeto não se torna participativo só porque pergunta a opinião da comunidade."
+        }
+      ],
+      "ficha": {
+        "texto": "Casa do Conselho do Território: um espaço acessível de decisão coletiva, com roda de conversa, mapa interdisciplinar, painel de indicadores e brinquedoteca, para que mães e pais também possam participar.",
+        "itens": ["Roda de conversa acessível", "Mapa Interdisciplinar de Participação", "Painel público de indicadores", "Brinquedoteca para incluir famílias"]
+      },
+      "encerramento": [
+        { "p": "jurema", "t": "Ouvir, envolver, compartilhar decisões e construir junto. Este bairro aprendeu que participar é decidir." }
+      ],
+      "indicadores": { "verde": 6, "agua": 4, "residuos": 4, "comunidade": 20, "economia": 6 }
+    }
+  ],
+
+  "extras": [
+    {
+      "etapa": "diagnostico", "tipo": "Escada da participação", "n": "caio",
+      "q": "Na escada da participação, em qual nível a comunidade opina entre opções já definidas?",
+      "alt": [
+        { "t": "Consulta, pois os moradores escolhem entre alternativas preparadas pela equipe.", "c": true },
+        { "t": "Informação, pois os moradores apenas recebem as notícias sobre o que foi decidido." },
+        { "t": "Cogestão, pois os moradores constroem as decisões lado a lado com a equipe técnica." },
+        { "t": "Autonomia, pois os moradores assumem o protagonismo e a continuidade das ações." }
+      ],
+      "e": "Na consulta, a comunidade é ouvida, mas dentro de limites definidos por outras pessoas. É um passo importante, mas ainda não é decisão compartilhada."
+    },
+    {
+      "etapa": "acompanhamento", "tipo": "Escada da participação", "n": "caio",
+      "q": "Em qual nível da escada a comunidade assume o protagonismo e garante a continuidade das ações?",
+      "alt": [
+        { "t": "Autonomia, em que o grupo local conduz o projeto mesmo depois da saída da equipe.", "c": true },
+        { "t": "Informação, em que o grupo local recebe comunicados sobre as ações já realizadas." },
+        { "t": "Consulta, em que o grupo local escolhe entre propostas elaboradas pela equipe." },
+        { "t": "Divulgação, em que o grupo local compartilha nas redes as ações feitas pela equipe." }
+      ],
+      "e": "A autonomia é o degrau mais alto: a comunidade não depende mais da equipe para decidir e continuar. O projeto passa a ser, de fato, dela."
+    },
+    {
+      "etapa": "planejamento", "tipo": "Economia solidária", "n": "lia",
+      "q": "Que experiência brasileira mostra como uma moeda social pode fortalecer a economia de um bairro?",
+      "alt": [
+        { "t": "O Banco Palmas, em Fortaleza, que criou uma moeda própria para circular no bairro.", "c": true },
+        { "t": "A Bolsa de Valores, em São Paulo, que negocia as ações de grandes empresas globais." },
+        { "t": "A Casa da Moeda, no Rio de Janeiro, que fabrica as cédulas oficiais de todo o país." },
+        { "t": "O Banco Central, em Brasília, que define a taxa básica de juros de toda a economia." }
+      ],
+      "e": "Criado em 1998 no Conjunto Palmeiras, em Fortaleza, o Banco Palmas é um banco comunitário. Sua moeda social estimula a compra no comércio local e mantém a renda no bairro."
+    },
+    {
+      "etapa": "diagnostico", "tipo": "Clima urbano", "n": "lia",
+      "q": "Por que a arborização reduz a temperatura de uma praça em dias quentes?",
+      "alt": [
+        { "t": "Porque as árvores fazem sombra e liberam vapor de água, resfriando o ar ao redor.", "c": true },
+        { "t": "Porque as árvores absorvem o calor do asfalto e o devolvem à noite em dobro no ar." },
+        { "t": "Porque as árvores impedem a passagem do vento, deixando o ar parado e mais fresco." },
+        { "t": "Porque as árvores refletem toda a luz do sol de volta para o céu, como um espelho." }
+      ],
+      "e": "Sombra e evapotranspiração reduzem as ilhas de calor. Uma praça arborizada pode ser vários graus mais fresca do que uma praça só de concreto."
+    },
+    {
+      "etapa": "priorizacao", "tipo": "Inclusão", "n": "caio",
+      "q": "Qual medida reduz as barreiras de participação de pessoas com deficiência nas reuniões do bairro?",
+      "alt": [
+        { "t": "Local acessível, intérprete de Libras e materiais em formatos diversos e simples.", "c": true },
+        { "t": "Reuniões no segundo andar e sem elevador, para que o espaço fique mais reservado." },
+        { "t": "Materiais apenas em letras miúdas, para economizar papel e caber mais conteúdo." },
+        { "t": "Apresentações apenas faladas e rápidas, para que a reunião termine mais cedo." }
+      ],
+      "e": "Participação só é real quando todas as pessoas conseguem estar presentes, compreender e se expressar. Acessibilidade é condição, não detalhe."
+    },
+    {
+      "etapa": "implementacao", "tipo": "Prática sustentável", "n": "teo",
+      "q": "O que é necessário para uma boa compostagem comunitária?",
+      "alt": [
+        { "t": "Equilíbrio entre materiais verdes e secos, umidade adequada e boa aeração da pilha.", "c": true },
+        { "t": "Muita carne, óleo e laticínios, sem nenhuma folha seca e com a pilha sempre encharcada." },
+        { "t": "Plástico e vidro misturados aos restos de comida, para acelerar a decomposição." },
+        { "t": "Pilha fechada em saco plástico, sem ar, para que o cheiro forte fique lá dentro." }
+      ],
+      "e": "Restos de frutas e verduras trazem nitrogênio; folhas secas e serragem trazem carbono. Com umidade e ar, os microrganismos transformam tudo em adubo, sem mau cheiro."
+    },
+    {
+      "etapa": "planejamento", "tipo": "Interdisciplinar", "n": "lia",
+      "q": "Que área ajuda a calcular quanta água da chuva um telhado pode captar para uma cisterna?",
+      "alt": [
+        { "t": "A matemática, multiplicando a área do telhado pela altura de chuva do período.", "c": true },
+        { "t": "A literatura, analisando os poemas sobre chuva escritos pelos moradores locais." },
+        { "t": "A educação física, medindo o tempo que a água leva para correr pela calçada." },
+        { "t": "A língua estrangeira, traduzindo os manuais de cisternas importadas de fora." }
+      ],
+      "e": "Cada milímetro de chuva sobre um metro quadrado de telhado gera um litro de água. Um telhado de cinquenta metros quadrados, com cem milímetros de chuva, capta cerca de cinco mil litros."
+    },
+    {
+      "etapa": "acompanhamento", "tipo": "Decisão pedagógica", "n": "caio",
+      "q": "Qual registro ajuda os estudantes a perceber como a participação mudou o projeto?",
+      "alt": [
+        { "t": "Um diário de bordo comparando as ideias iniciais com as decisões tomadas em grupo.", "c": true },
+        { "t": "Uma lista de presença assinada, sem anotar nenhuma das ideias discutidas nas reuniões." },
+        { "t": "Uma prova individual, com perguntas sobre datas e nomes de leis ambientais apenas." },
+        { "t": "Um álbum de fotos posadas, sem registrar quem decidiu o quê em cada momento." }
+      ],
+      "e": "O diário de bordo torna visível a influência da comunidade: o que mudou, por que mudou e quem ajudou a mudar. É uma evidência poderosa de aprendizagem."
+    }
+  ],
+
+  "itens": [
+    { "id": "ipe", "nome": "Ipê-amarelo", "icone": "🌼", "custo": 10, "ind": { "verde": 2 }, "fala": { "p": "teo", "t": "Ipê-amarelo: árvore nativa que floresce no inverno, oferece sombra e alimenta abelhas e beija-flores." } },
+    { "id": "pitangueira", "nome": "Pitangueira", "icone": "🍒", "custo": 10, "ind": { "verde": 2, "economia": 1 }, "fala": { "p": "teo", "t": "Pitangueira: árvore frutífera nativa, com sombra para a vizinhança e frutos para as pessoas e os pássaros." } },
+    { "id": "flores", "nome": "Canteiro de polinizadores", "icone": "🌸", "custo": 6, "ind": { "verde": 1 }, "fala": { "p": "teo", "t": "Canteiro de polinizadores: flores que atraem abelhas, borboletas e beija-flores, aumentando a biodiversidade." } },
+    { "id": "colmeia", "nome": "Abelhas sem ferrão", "icone": "🐝", "custo": 10, "ind": { "verde": 2 }, "fala": { "p": "teo", "t": "Caixa de abelhas sem ferrão: abrigo para as abelhas nativas, essenciais para a polinização das plantas." } },
+    { "id": "banco", "nome": "Banco de pallet", "icone": "🪑", "custo": 6, "ind": { "comunidade": 1, "residuos": 1 }, "fala": { "p": "teo", "t": "Banco de pallet: feito nas oficinas de reaproveitamento, é um convite para a convivência na rua." } },
+    { "id": "lixeiras", "nome": "Lixeiras seletivas", "icone": "🗑️", "custo": 8, "ind": { "residuos": 2 }, "fala": { "p": "teo", "t": "Lixeiras seletivas: um conjunto de cores que facilita a separação dos resíduos recicláveis." } },
+    { "id": "composteira", "nome": "Composteira", "icone": "🪱", "custo": 8, "ind": { "residuos": 2, "verde": 1 }, "fala": { "p": "teo", "t": "Composteira: transforma os restos de comida em adubo para as hortas e os jardins do bairro." } },
+    { "id": "cisterna", "nome": "Cisterna de chuva", "icone": "🛢️", "custo": 12, "ind": { "agua": 3 }, "fala": { "p": "teo", "t": "Cisterna de chuva: um reservatório que capta a água do telhado para regar hortas e jardins." } },
+    { "id": "poste", "nome": "Poste solar", "icone": "💡", "custo": 12, "ind": { "comunidade": 2, "economia": 1 }, "fala": { "p": "teo", "t": "Poste solar: iluminação pública abastecida pelo sol, que deixa as ruas mais seguras à noite." } },
+    { "id": "bicicletario", "nome": "Bicicletário", "icone": "🚲", "custo": 8, "ind": { "comunidade": 1, "economia": 1 }, "fala": { "p": "teo", "t": "Bicicletário: um estacionamento de bicicletas que incentiva a mobilidade ativa e limpa." } }
+  ]
+}
