@@ -26,7 +26,8 @@ RAIZ = Path(__file__).resolve().parent.parent
 CONTEUDO = RAIZ / "data" / "conteudo.json"
 PASTA = RAIZ / "audio"
 SIMULTANEAS = 3
-TENTATIVAS = 6
+TENTATIVAS = 5
+PRAZO = 25 * 60  # segundos: depois disso, o que faltar fica para a próxima publicação
 VOZES_RESERVA = {"pt-BR-FranciscaNeural", "pt-BR-AntonioNeural", "pt-BR-ThalitaNeural"}
 
 
@@ -125,22 +126,44 @@ async def testar_voz(edge_tts, voz, rate, pitch):
     return ok
 
 
-async def main():
+def aviso(nivel, texto):
+    """Mostra a mensagem no log e como anotação na página da execução do GitHub Actions."""
+    print(texto)
+    if os.environ.get("GITHUB_ACTIONS"):
+        print(f"::{nivel} title=Vozes neurais::" + texto.replace("%", "%25").replace("\r", "").replace("\n", "%0A"))
+
+
+def importar_edge_tts():
     try:
         import edge_tts
+        return edge_tts
     except ImportError:
-        print("Instale a dependência: pip install edge-tts")
-        return 1
+        pass
+    # se o passo do workflow não instalou a biblioteca, tenta instalar aqui mesmo
+    import subprocess
+    for _ in range(3):
+        r = subprocess.run([sys.executable, "-m", "pip", "install", "--quiet", "--upgrade", "edge-tts"], capture_output=True, text=True)
+        if r.returncode == 0:
+            break
+        aviso("warning", "pip install edge-tts falhou: " + (r.stderr or r.stdout)[-400:])
+        time.sleep(5)
+    import edge_tts
+    return edge_tts
 
+
+async def main():
     c = carregar()
     PASTA.mkdir(exist_ok=True)
     falas = listar_falas(c)
     inicio = time.time()
-    status = {"total": len(falas), "comAudio": 0, "gerados": 0, "reaproveitados": 0, "falhas": 0, "erros": [], "vozes": {}}
+    status = {"total": len(falas), "comAudio": 0, "gerados": 0, "reaproveitados": 0, "falhas": 0, "erros": [], "vozes": {}, "etapa": "início"}
     manifesto = {}
     print(f"{len(falas)} falas para narrar.")
 
     try:
+        edge_tts = importar_edge_tts()
+        status["edgeTts"] = getattr(edge_tts, "__version__", "?")
+        status["etapa"] = "lista de vozes"
         # Vozes "Multilingual" nunca são usadas: mesmo com o idioma marcado, elas podem
         # pronunciar palavras como "alternativa" e "mutirão" com sotaque estrangeiro.
         disponiveis = None
@@ -163,6 +186,7 @@ async def main():
             MODO_IDIOMA["lang"] = False
         marca = "ptBR-mono-lang" if travado and MODO_IDIOMA["lang"] else ("ptBR-mono" if travado else "mono")
         status["modo"] = marca
+        status["etapa"] = "gravação"
 
         vozes = {}
         for p, per in c["personagens"].items():
@@ -181,7 +205,18 @@ async def main():
             print(f"  {per['nome']}: {escolha[0]} ({escolha[1]}, {escolha[2]})")
 
         sem = asyncio.Semaphore(SIMULTANEAS)
-        pendentes = []
+        controle = {"falhasSeguidas": 0, "desistir": False}
+
+        def parar():
+            # sem nenhuma fala gravada depois de várias falhas seguidas, o serviço está fora do ar
+            # ou bloqueando pedidos: insistir só deixaria a publicação presa por horas
+            if controle["desistir"]:
+                return True
+            if time.time() - inicio > PRAZO:
+                controle["desistir"] = "prazo de gravação esgotado"
+            elif status["gerados"] == 0 and controle["falhasSeguidas"] >= 18:
+                controle["desistir"] = "o serviço de vozes recusou todos os pedidos"
+            return bool(controle["desistir"])
 
         async def gerar(p, t, tentativas):
             voz, rate, pitch = vozes[p]
@@ -194,6 +229,8 @@ async def main():
             falado = aplicar_pronuncia(t, pronuncia)
             async with sem:
                 for tentativa in range(tentativas):
+                    if parar():
+                        return False
                     tmp = destino.with_suffix(".tmp")
                     try:
                         await asyncio.wait_for(edge_tts.Communicate(falado, voz, rate=rate, pitch=pitch).save(str(tmp)), timeout=60)
@@ -201,27 +238,38 @@ async def main():
                             tmp.replace(destino)
                             manifesto[f"{p}|{t}"] = arq
                             status["gerados"] += 1
+                            controle["falhasSeguidas"] = 0
                             await asyncio.sleep(0.15)
                             return True
                         raise RuntimeError("áudio vazio")
-                    except (Exception, asyncio.CancelledError) as e:  # noqa: BLE001
+                    except Exception as e:  # noqa: BLE001
                         tmp.unlink(missing_ok=True)
-                        if tentativa == tentativas - 1:
+                        controle["falhasSeguidas"] += 1
+                        if tentativa == tentativas - 1 or controle["falhasSeguidas"] <= 3:
                             if len(status["erros"]) < 15:
                                 status["erros"].append(f"{p}: {t[:40]}… → {e!r}"[:300])
-                        await asyncio.sleep(min(30, 1.5 * 2 ** tentativa) + random.random())
+                        await asyncio.sleep(min(20, 1.5 * 2 ** tentativa) + random.random())
             return False
 
         resultados = await asyncio.gather(*(gerar(p, t, TENTATIVAS) for p, t in falas))
         pendentes = [f for f, ok in zip(falas, resultados) if not ok]
-        if pendentes:
+        if pendentes and not controle["desistir"]:
             # segunda passada, mais lenta, para as falas que falharam (o serviço às vezes limita pedidos)
             print(f"Repetindo {len(pendentes)} falas que falharam…")
             await asyncio.sleep(20)
             for p, t in pendentes:
-                await gerar(p, t, 4)
+                await gerar(p, t, 3)
+        if controle["desistir"]:
+            status["erros"].insert(0, "gravação interrompida: " + controle["desistir"])
+        status["etapa"] = "concluído"
+    except BaseException as e:  # noqa: BLE001
+        import traceback
+        status["erros"].append("falha geral: " + "".join(traceback.format_exception_only(type(e), e)).strip()[:400])
+        aviso("error", traceback.format_exc()[-1500:])
     finally:
         # o manifesto é sempre regravado, com todas as falas que têm áudio válido
+        # gravações antigas (de vozes que já não são usadas) são apagadas, para que nenhuma fala
+        # volte a tocar com uma voz multilíngue; o que faltar é lido pelas vozes do navegador
         validos = set(manifesto.values())
         for f in PASTA.glob("*.mp3"):
             if f.name not in validos:
@@ -237,6 +285,10 @@ async def main():
                   + "".join(f"- {k}: `{v}`\n" for k, v in status["vozes"].items())
                   + ("\n**Erros:**\n" + "".join(f"- {e}\n" for e in status["erros"]) if status["erros"] else ""))
         print(resumo)
+        aviso("notice" if status["falhas"] == 0 else "warning",
+              f"{status['comAudio']} de {status['total']} falas com voz neural · etapa: {status['etapa']} · "
+              + " · ".join(f"{k}: {v}" for k, v in status["vozes"].items())
+              + ("\nErros: " + " | ".join(status["erros"][:6]) if status["erros"] else ""))
         if os.environ.get("GITHUB_STEP_SUMMARY"):
             with open(os.environ["GITHUB_STEP_SUMMARY"], "a", encoding="utf-8") as f:
                 f.write(resumo)

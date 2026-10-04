@@ -11,18 +11,25 @@ function generoDaVoz(v) {
   return null;
 }
 
+// Vozes multilíngues (ex.: "Thalita Multilingual") trocam de idioma no meio da frase e
+// pronunciam palavras como "alternativa" e "mutirão" com sotaque estrangeiro.
+const ehMultilingue = (v) => /multilingual|multil[íi]ngue/i.test(v.name + ' ' + (v.voiceURI || ''));
+const idioma = (v) => (v.lang || '').toLowerCase().replace('_', '-');
+const ehNatural = (v) => /natural|neural|online|premium|enhanced|aprimorad|google/i.test(v.name);
+
 function pontuar(v) {
-  const lang = (v.lang || '').toLowerCase().replace('_', '-');
+  const lang = idioma(v);
   let s = 0;
-  if (lang === 'pt-br') s += 40; else if (lang.startsWith('pt')) s += 20;
-  if (/natural|neural|online|premium|enhanced|aprimorad/i.test(v.name)) s += 50;
+  // português do Brasil sempre vem antes de outras variantes do português
+  if (lang === 'pt-br') s += 80; else if (lang.startsWith('pt')) s += 10;
+  if (ehNatural(v)) s += 50;
   if (/google/i.test(v.name)) s += 12;
   if (/microsoft/i.test(v.name)) s += 6;
-  // vozes multilíngues trocam de idioma no meio da frase e soam com sotaque estrangeiro
-  if (/multilingual|multil[íi]ngue/i.test(v.name + ' ' + (v.voiceURI || ''))) s -= 80;
-  if (lang && !lang.startsWith('pt')) s -= 100;
+  if (ehMultilingue(v)) s -= 120;
+  if (lang && !lang.startsWith('pt')) s -= 200;
   return s;
 }
+
 
 // Troca siglas, números e palavras estrangeiras pela forma falada em português (só na fala).
 export function aplicarPronuncia(texto, mapa = {}) {
@@ -96,8 +103,14 @@ export class Narrador {
     });
   }
 
+  // Só vozes que falam português do Brasil de forma nativa. As multilíngues e as de
+  // Portugal entram apenas quando o aparelho não oferece nenhuma outra opção.
   vozesPortugues() {
-    return this.disponiveis.filter((v) => /^pt/i.test(v.lang)).sort((a, b) => pontuar(b) - pontuar(a));
+    const pt = this.disponiveis.filter((v) => /^pt/i.test(v.lang));
+    const br = pt.filter((v) => idioma(v) === 'pt-br');
+    const camadas = [br.filter((v) => !ehMultilingue(v)), pt.filter((v) => !ehMultilingue(v)), pt];
+    const lista = camadas.find((c) => c.length) || [];
+    return lista.slice().sort((a, b) => pontuar(b) - pontuar(a));
   }
 
   atribuir(preferidas = {}) {
@@ -107,19 +120,24 @@ export class Narrador {
     const ordem = ['jurema', 'caio', 'lia', 'teo'];
     this.ajustePitch = {};
     for (const p of ordem) {
-      const pref = preferidas[p] && this.disponiveis.find((v) => v.voiceURI === preferidas[p]);
+      // escolhas antigas que caíram em vozes multilíngues ou de outro idioma são descartadas
+      const pref = preferidas[p] && base.find((v) => v.voiceURI === preferidas[p]);
       if (pref) { this.vozes[p] = pref.voiceURI; usadas.add(pref.voiceURI); continue; }
       const gen = this.P[p].genero;
       const doGenero = base.filter((v) => generoDaVoz(v) === gen);
       const neutras = base.filter((v) => generoDaVoz(v) === null);
-      let escolhida = doGenero.find((v) => !usadas.has(v.voiceURI)) || neutras.find((v) => !usadas.has(v.voiceURI)) || doGenero[0] || neutras[0] || base[0];
-      if (escolhida) {
-        this.vozes[p] = escolhida.voiceURI;
-        usadas.add(escolhida.voiceURI);
-        const g = generoDaVoz(escolhida);
-        // Se não houver voz do gênero do apresentador, ajusta o tom para diferenciar.
-        if (g && g !== gen) this.ajustePitch[p] = gen === 'masculino' ? 0.72 : 1.25;
-      }
+      const melhor = doGenero[0] || neutras[0] || base[0];
+      if (!melhor) continue;
+      // outra voz só é usada se for tão natural quanto a melhor; senão, a melhor voz é
+      // compartilhada, e o tom e o ritmo próprios de cada apresentador (pitch e rate no
+      // conteudo.json) mantêm as vozes diferentes, o que soa mais humano que uma voz robótica
+      const alternativa = [...doGenero, ...neutras].find((v) => !usadas.has(v.voiceURI) && pontuar(v) >= pontuar(melhor) - 15);
+      const escolhida = alternativa || melhor;
+      this.vozes[p] = escolhida.voiceURI;
+      usadas.add(escolhida.voiceURI);
+      const g = generoDaVoz(escolhida);
+      // Se não houver voz do gênero do apresentador, ajusta o tom para diferenciar.
+      if (g && g !== gen) this.ajustePitch[p] = gen === 'masculino' ? 0.72 : 1.25;
     }
   }
 

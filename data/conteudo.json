@@ -10,10 +10,10 @@
       "edge": [
         "pt-BR-FranciscaNeural"
       ],
-      "edgeRate": "-8%",
-      "edgePitch": "-4Hz",
-      "pitch": 0.9,
-      "rate": 0.93
+      "edgeRate": "-6%",
+      "edgePitch": "-2Hz",
+      "pitch": 0.92,
+      "rate": 0.94
     },
     "caio": {
       "nome": "Professor Caio",
@@ -24,9 +24,9 @@
         "pt-BR-AntonioNeural"
       ],
       "edgeRate": "-3%",
-      "edgePitch": "-3Hz",
-      "pitch": 0.88,
-      "rate": 0.98
+      "edgePitch": "-2Hz",
+      "pitch": 0.9,
+      "rate": 0.97
     },
     "lia": {
       "nome": "Engenheira Lia",
@@ -36,19 +36,19 @@
       "edge": [
         {
           "voz": "pt-BR-ThalitaNeural",
-          "rate": "+2%",
-          "pitch": "+4Hz"
+          "rate": "+0%",
+          "pitch": "+2Hz"
         },
         {
           "voz": "pt-BR-FranciscaNeural",
-          "rate": "+6%",
-          "pitch": "+16Hz"
+          "rate": "+3%",
+          "pitch": "+10Hz"
         }
       ],
-      "edgeRate": "+6%",
-      "edgePitch": "+16Hz",
-      "pitch": 1.1,
-      "rate": 1.04
+      "edgeRate": "+3%",
+      "edgePitch": "+10Hz",
+      "pitch": 1.08,
+      "rate": 1.02
     },
     "teo": {
       "nome": "Téo",
@@ -58,14 +58,14 @@
       "edge": [
         {
           "voz": "pt-BR-AntonioNeural",
-          "rate": "+8%",
-          "pitch": "+14Hz"
+          "rate": "+4%",
+          "pitch": "+9Hz"
         }
       ],
-      "edgeRate": "+8%",
-      "edgePitch": "+14Hz",
-      "pitch": 1.18,
-      "rate": 1.07
+      "edgeRate": "+4%",
+      "edgePitch": "+9Hz",
+      "pitch": 1.12,
+      "rate": 1.04
     }
   },
   "etapas": {
@@ -2822,6 +2822,11 @@
     "parklet": "párquilét",
     "12.305": "doze mil, trezentos e cinco",
     "11.888": "onze mil, oitocentos e oitenta e oito",
-    "11.947": "onze mil, novecentos e quarenta e sete"
+    "11.947": "onze mil, novecentos e quarenta e sete",
+    "pallets": "páletes",
+    "pallet": "pálete",
+    "Pallets": "Páletes",
+    "Pallet": "Pálete",
+    "shopping": "xópim"
   }
 }

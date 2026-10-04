@@ -501,12 +501,14 @@ function atualizarInfoQualidade() {
 
 function montarConfig() {
   const modo = narr.modoGravado ? '🎙️ Vozes neurais gravadas ativas: cada apresentador tem uma voz humana própria.' :
-    narr.disponiveis.length ? `🗣️ Vozes do navegador: ${narr.vozesPortugues().length} voz(es) em português encontradas. Escolha uma voz diferente para cada apresentador.` :
+    narr.disponiveis.length ? `🗣️ Vozes do navegador: ${narr.vozesPortugues().length} voz(es) em português do Brasil encontradas. ${Object.keys(narr.manifesto).length ? 'As vozes neurais gravadas estão desligadas logo abaixo.' : 'As vozes neurais gravadas ainda não foram publicadas neste site.'}` :
       '⚠️ Este navegador não oferece vozes sintetizadas. A narração aparecerá como legenda.';
   $('#cfgModoVoz').textContent = modo;
   const box = $('#cfgVozes');
   box.innerHTML = '';
-  const lista = [...narr.vozesPortugues(), ...narr.disponiveis.filter((v) => !/^pt/i.test(v.lang))];
+  // só aparecem vozes que falam português do Brasil sem trocar de idioma (as multilíngues ficam de fora)
+  const pt = narr.vozesPortugues();
+  const lista = pt.length ? pt : narr.disponiveis;
   for (const p of Object.keys(C.personagens)) {
     const per = C.personagens[p];
     const linha = document.createElement('div');

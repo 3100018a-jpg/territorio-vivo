@@ -77,14 +77,18 @@ A cada publicação, o fluxo do GitHub Actions executa `ferramentas/gerar_vozes.
 
 | Personagem | Voz neural |
 |---|---|
-| Dona Jurema | `pt-BR-FranciscaNeural`, mais lenta e grave |
+| Dona Jurema | `pt-BR-FranciscaNeural`, um pouco mais lenta e grave |
 | Professor Caio | `pt-BR-AntonioNeural`, levemente grave |
-| Engenheira Lia | `pt-BR-ThalitaNeural`; se não estiver disponível, `pt-BR-FranciscaNeural` mais aguda e mais rápida |
-| Téo | `pt-BR-AntonioNeural`, mais agudo e mais rápido |
+| Engenheira Lia | `pt-BR-ThalitaNeural` (somente se existir a versão que fala apenas português); senão, `pt-BR-FranciscaNeural` levemente mais aguda |
+| Téo | `pt-BR-AntonioNeural`, levemente mais agudo e mais rápido |
 
-Todos os apresentadores usam vozes que falam **somente português do Brasil**. As vozes multilíngues (como Thalita Multilingual e Macerio Multilingual) são bloqueadas pelo gerador, porque podem pronunciar palavras como "alternativa" e "mutirão" com sotaque estrangeiro. Além disso, o texto é enviado marcado como português do Brasil, e siglas, números e palavras estrangeiras passam pelo ajuste de pronúncia definido em `pronuncia`, no arquivo `data/conteudo.json`.
+Todos os apresentadores usam vozes que falam **somente português do Brasil**. As vozes multilíngues (como Thalita Multilingual e Macerio Multilingual) são bloqueadas pelo gerador e pelo jogo, porque podem pronunciar palavras como "alternativa" e "mutirão" com sotaque estrangeiro. O texto é enviado marcado como português do Brasil, os ajustes de tom e ritmo são pequenos, para a voz continuar natural, e siglas, números e palavras estrangeiras passam pelo ajuste de pronúncia definido em `pronuncia`, no arquivo `data/conteudo.json`.
 
-As vozes ficam guardadas em cache e só são refeitas quando o texto muda. Se a geração falhar, o jogo é publicado mesmo assim e usa as **vozes do próprio navegador**. Nesse caso, ele escolhe automaticamente uma voz feminina ou masculina em português para cada apresentador, dando preferência às vozes naturais do Microsoft Edge e do Google Chrome. Em **⚙️ Vozes e gráficos** é possível trocar a voz de cada personagem, a velocidade e o volume.
+O resultado de cada geração aparece como aviso na página da execução, em **Actions**, e no arquivo `audio/status.json` do site publicado.
+
+> **Importante:** em **Settings → Pages → Build and deployment → Source**, deixe selecionado **GitHub Actions**. Com a opção **Deploy from a branch**, o GitHub publica também uma cópia do repositório sem as vozes gravadas, que pode substituir a versão com as vozes neurais.
+
+As vozes ficam guardadas em cache e só são refeitas quando o texto muda. Se a geração falhar, o jogo é publicado mesmo assim e usa as **vozes do próprio navegador**. Nesse caso, ele escolhe automaticamente uma voz feminina ou masculina em português do Brasil para cada apresentador, dando preferência às vozes naturais do Microsoft Edge e do Google Chrome e deixando de fora as vozes multilíngues e as de Portugal. Em **⚙️ Vozes e gráficos** é possível trocar a voz de cada personagem, a velocidade e o volume.
 
 > As vozes neurais são geradas com a biblioteca de código aberto [`edge-tts`](https://github.com/rany2/edge-tts), que usa o serviço de leitura em voz alta do Microsoft Edge. Para não usá-lo, apague o passo **Gerar as vozes neurais** do arquivo `.github/workflows/pages.yml`.
 
