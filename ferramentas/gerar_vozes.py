@@ -133,29 +133,32 @@ async def main():
     falas = listar_falas(c)
     print(f"{len(falas)} falas para narrar.")
 
-    disponiveis = {v["ShortName"] for v in await edge_tts.list_voices()}
+    # Vozes "Multilingual" nunca são usadas: mesmo com o idioma marcado, elas podem
+    # pronunciar palavras como "alternativa" e "mutirão" com sotaque estrangeiro.
+    # Todos os apresentadores usam vozes que falam exclusivamente português do Brasil.
+    disponiveis = {v["ShortName"] for v in await edge_tts.list_voices()
+                   if v["ShortName"].startswith("pt-BR") and "Multilingual" not in v["ShortName"]}
+    print("Vozes pt-BR disponíveis:", ", ".join(sorted(disponiveis)))
     pronuncia = c.get("pronuncia", {})
-    travado = travar_portugues(edge_tts)
-    if travado:
-        # confirma se o serviço aceita a marcação <lang>; se não, mantém só o idioma pt-BR no SSML
-        multi = next((v for per in c["personagens"].values() for v in per.get("edge", []) if "Multilingual" in v and v in disponiveis), None)
-        if multi and not await testar_voz(edge_tts, multi, "+0%", "+0Hz"):
-            MODO_IDIOMA["lang"] = False
-            if not await testar_voz(edge_tts, multi, "+0%", "+0Hz"):
-                travado = False
-    print(f"Português travado nas vozes multilíngues: {'sim' if travado else 'não'}"
-          f"{' (com <lang>)' if travado and MODO_IDIOMA['lang'] else ''}")
-    marca = "ptBR-lang" if travado and MODO_IDIOMA["lang"] else ("ptBR" if travado else "livre")
+    travado = travar_portugues(edge_tts)  # marca todo o texto como pt-BR (o padrão da ferramenta é en-US)
+    if travado and not await testar_voz(edge_tts, "pt-BR-FranciscaNeural", "+0%", "+0Hz"):
+        MODO_IDIOMA["lang"] = False
+    marca = "ptBR-mono-lang" if travado and MODO_IDIOMA["lang"] else ("ptBR-mono" if travado else "mono")
 
     vozes = {}
     for p, per in c["personagens"].items():
-        candidatas = [v for v in per.get("edge", []) if v in disponiveis]
-        # sem a trava de idioma, uma voz multilíngue poderia falar com sotaque: usa a próxima opção
-        if not travado:
-            candidatas = [v for v in candidatas if "Multilingual" not in v] or candidatas
-        escolhida = candidatas[0] if candidatas else next((v for v in sorted(disponiveis) if v.startswith("pt-BR") and "Multilingual" not in v), None)
-        vozes[p] = (escolhida, per.get("edgeRate", "+0%"), per.get("edgePitch", "+0Hz"))
-        print(f"  {per['nome']}: {escolhida} ({vozes[p][1]}, {vozes[p][2]})")
+        opcoes = []
+        for v in per.get("edge", []):
+            if isinstance(v, str):
+                opcoes.append((v, per.get("edgeRate", "+0%"), per.get("edgePitch", "+0Hz")))
+            else:
+                opcoes.append((v["voz"], v.get("rate", "+0%"), v.get("pitch", "+0Hz")))
+        escolha = next((o for o in opcoes if o[0] in disponiveis), None)
+        if not escolha:
+            reserva = "pt-BR-FranciscaNeural" if per.get("genero") == "feminino" else "pt-BR-AntonioNeural"
+            escolha = (reserva, per.get("edgeRate", "+0%"), per.get("edgePitch", "+0Hz"))
+        vozes[p] = escolha
+        print(f"  {per['nome']}: {escolha[0]} ({escolha[1]}, {escolha[2]})")
 
     manifesto = {}
     sem = asyncio.Semaphore(SIMULTANEAS)

@@ -34,12 +34,19 @@
       "genero": "feminino",
       "cor": "#8b5cf6",
       "edge": [
-        "pt-BR-ThalitaMultilingualNeural",
-        "pt-BR-ThalitaNeural",
-        "pt-BR-FranciscaNeural"
+        {
+          "voz": "pt-BR-ThalitaNeural",
+          "rate": "+2%",
+          "pitch": "+4Hz"
+        },
+        {
+          "voz": "pt-BR-FranciscaNeural",
+          "rate": "+6%",
+          "pitch": "+16Hz"
+        }
       ],
-      "edgeRate": "+4%",
-      "edgePitch": "+6Hz",
+      "edgeRate": "+6%",
+      "edgePitch": "+16Hz",
       "pitch": 1.1,
       "rate": 1.04
     },
@@ -49,8 +56,11 @@
       "genero": "masculino",
       "cor": "#2fbf71",
       "edge": [
-        "pt-BR-MacerioMultilingualNeural",
-        "pt-BR-AntonioNeural"
+        {
+          "voz": "pt-BR-AntonioNeural",
+          "rate": "+8%",
+          "pitch": "+14Hz"
+        }
       ],
       "edgeRate": "+8%",
       "edgePitch": "+14Hz",
