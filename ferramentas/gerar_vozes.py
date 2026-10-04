@@ -79,6 +79,48 @@ def aplicar_pronuncia(texto, mapa):
     return texto
 
 
+# ---------------------------------------------------------------------------
+# Português travado nas vozes multilíngues
+# ---------------------------------------------------------------------------
+# As vozes "Multilingual" (Thalita e Macerio) tentam adivinhar o idioma de cada palavra
+# e, sem aviso, pronunciam palavras como "alternativa" ou "mutirão" com sotaque estrangeiro.
+# Aqui o SSML enviado ao serviço passa a declarar pt-BR e envolve todo o texto em
+# <lang xml:lang="pt-BR">, que obriga a voz a falar apenas em português do Brasil.
+MODO_IDIOMA = {"lang": True}
+
+
+def travar_portugues(edge_tts):
+    import edge_tts.communicate as com
+
+    if not hasattr(com, "mkssml"):
+        return False
+    original = com.mkssml
+
+    def mkssml(*args, **kwargs):
+        ssml = original(*args, **kwargs)
+        ssml = re.sub(r"xml:lang='[^']*'", "xml:lang='pt-BR'", ssml, count=1)
+        if MODO_IDIOMA["lang"]:
+            # formato da documentação do Azure: <voice><lang xml:lang="pt-BR">…</lang></voice>
+            ssml = re.sub(r"(<prosody[^>]*>)", r"<lang xml:lang='pt-BR'>\1", ssml, count=1)
+            ssml = ssml.replace("</prosody>", "</prosody></lang>", 1)
+        return ssml
+
+    com.mkssml = mkssml
+    return True
+
+
+async def testar_voz(edge_tts, voz, rate, pitch):
+    """Gera uma frase curta para confirmar que o serviço aceita a voz com o português travado."""
+    tmp = PASTA / "_teste_voz.tmp"
+    try:
+        await edge_tts.Communicate("Alternativa A. Mutirão na praça.", voz, rate=rate, pitch=pitch).save(str(tmp))
+        ok = tmp.exists() and tmp.stat().st_size > 1000
+    except Exception:  # noqa: BLE001
+        ok = False
+    tmp.unlink(missing_ok=True)
+    return ok
+
+
 async def main():
     try:
         import edge_tts
@@ -91,15 +133,27 @@ async def main():
     falas = listar_falas(c)
     print(f"{len(falas)} falas para narrar.")
 
-    # Vozes "Multilingual" mudam de idioma no meio da frase e criam sotaque estrangeiro
-    # em palavras como "alternativa" e "mutirão". Só usamos vozes exclusivamente em português.
-    disponiveis = {v["ShortName"] for v in await edge_tts.list_voices() if "Multilingual" not in v["ShortName"]}
+    disponiveis = {v["ShortName"] for v in await edge_tts.list_voices()}
     pronuncia = c.get("pronuncia", {})
+    travado = travar_portugues(edge_tts)
+    if travado:
+        # confirma se o serviço aceita a marcação <lang>; se não, mantém só o idioma pt-BR no SSML
+        multi = next((v for per in c["personagens"].values() for v in per.get("edge", []) if "Multilingual" in v and v in disponiveis), None)
+        if multi and not await testar_voz(edge_tts, multi, "+0%", "+0Hz"):
+            MODO_IDIOMA["lang"] = False
+            if not await testar_voz(edge_tts, multi, "+0%", "+0Hz"):
+                travado = False
+    print(f"Português travado nas vozes multilíngues: {'sim' if travado else 'não'}"
+          f"{' (com <lang>)' if travado and MODO_IDIOMA['lang'] else ''}")
+    marca = "ptBR-lang" if travado and MODO_IDIOMA["lang"] else ("ptBR" if travado else "livre")
+
     vozes = {}
     for p, per in c["personagens"].items():
-        escolhida = next((v for v in per.get("edge", []) if v in disponiveis), None)
-        if not escolhida:
-            escolhida = next((v for v in sorted(disponiveis) if v.startswith("pt-BR")), None)
+        candidatas = [v for v in per.get("edge", []) if v in disponiveis]
+        # sem a trava de idioma, uma voz multilíngue poderia falar com sotaque: usa a próxima opção
+        if not travado:
+            candidatas = [v for v in candidatas if "Multilingual" not in v] or candidatas
+        escolhida = candidatas[0] if candidatas else next((v for v in sorted(disponiveis) if v.startswith("pt-BR") and "Multilingual" not in v), None)
         vozes[p] = (escolhida, per.get("edgeRate", "+0%"), per.get("edgePitch", "+0Hz"))
         print(f"  {per['nome']}: {escolhida} ({vozes[p][1]}, {vozes[p][2]})")
 
@@ -110,7 +164,7 @@ async def main():
     async def gerar(p, t):
         nonlocal falhas
         voz, rate, pitch = vozes[p]
-        arq = nome_arquivo(p, t, f"{voz}{rate}{pitch}")
+        arq = nome_arquivo(p, t, f"{voz}{rate}{pitch}{marca}")
         destino = PASTA / arq
         if destino.exists() and destino.stat().st_size > 1000:
             manifesto[f"{p}|{t}"] = arq

@@ -82,6 +82,8 @@ A cada publicação, o fluxo do GitHub Actions executa `ferramentas/gerar_vozes.
 | Engenheira Lia | `pt-BR-ThalitaMultilingualNeural` |
 | Téo | `pt-BR-MacerioMultilingualNeural`, com `pt-BR-AntonioNeural` mais agudo como reserva |
 
+As vozes da Lia e do Téo são multilíngues. Para que elas nunca troquem de idioma no meio da frase, o gerador envia o texto marcado como português do Brasil (`xml:lang="pt-BR"` e o elemento `<lang>`). Se o serviço não aceitar essa marcação, ele usa automaticamente a próxima voz da lista, que fala só português. Siglas, números e palavras estrangeiras passam pelo ajuste de pronúncia definido em `pronuncia`, no arquivo `data/conteudo.json`.
+
 As vozes ficam guardadas em cache e só são refeitas quando o texto muda. Se a geração falhar, o jogo é publicado mesmo assim e usa as **vozes do próprio navegador**. Nesse caso, ele escolhe automaticamente uma voz feminina ou masculina em português para cada apresentador, dando preferência às vozes naturais do Microsoft Edge e do Google Chrome. Em **⚙️ Vozes e gráficos** é possível trocar a voz de cada personagem, a velocidade e o volume.
 
 > As vozes neurais são geradas com a biblioteca de código aberto [`edge-tts`](https://github.com/rany2/edge-tts), que usa o serviço de leitura em voz alta do Microsoft Edge. Para não usá-lo, apague o passo **Gerar as vozes neurais** do arquivo `.github/workflows/pages.yml`.

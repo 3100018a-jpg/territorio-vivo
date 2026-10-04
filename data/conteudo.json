@@ -34,11 +34,12 @@
       "genero": "feminino",
       "cor": "#8b5cf6",
       "edge": [
+        "pt-BR-ThalitaMultilingualNeural",
         "pt-BR-ThalitaNeural",
         "pt-BR-FranciscaNeural"
       ],
-      "edgeRate": "+0%",
-      "edgePitch": "+12Hz",
+      "edgeRate": "+4%",
+      "edgePitch": "+6Hz",
       "pitch": 1.1,
       "rate": 1.04
     },
@@ -48,6 +49,7 @@
       "genero": "masculino",
       "cor": "#2fbf71",
       "edge": [
+        "pt-BR-MacerioMultilingualNeural",
         "pt-BR-AntonioNeural"
       ],
       "edgeRate": "+8%",
