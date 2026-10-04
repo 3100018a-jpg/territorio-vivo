@@ -559,6 +559,7 @@ async function comecar(nova) {
   $('#dialogo').classList.add('inativo');
   maquete.mostrarMarcadores(true);
   maquete.orbitar(false);
+  maquete.monitorAtivo = true;
   await maquete.visaoGeral();
   if (nova || !E.introVista) {
     const ok = await narr.sequencia(C.sistema.abertura);
@@ -647,6 +648,10 @@ function ligarEventos() {
 
   maquete.callbacks.lote = (k) => { const m = missaoDoLote(k); if (!m) return; if (E.concluidas[m.id]) verConstrucao(k); else abrirMissao(m.id); };
   maquete.callbacks.construcao = (k) => verConstrucao(k);
+  maquete.callbacks.qualidade = (q) => {
+    cfg.qualidade = q; salvarCfg();
+    toast(q === 'leve' ? '⚙️ Qualidade gráfica ajustada para Leve para manter o jogo fluido.' : '⚙️ Qualidade gráfica ajustada para Alta para manter o jogo fluido.', 'var(--azul)');
+  };
   maquete.callbacks.invalido = () => toast('Escolha um espaço livre de grama, longe de ruas, casas, lotes e do rio.', 'var(--rosa)');
 }
 

@@ -89,7 +89,7 @@ export class Maquete {
     this.container.appendChild(this.rotulos.domElement);
 
     const cena = (this.cena = new THREE.Scene());
-    this.camera = new THREE.PerspectiveCamera(36, this.container.clientWidth / this.container.clientHeight, 1, 1500);
+    this.camera = new THREE.PerspectiveCamera(36, this.container.clientWidth / this.container.clientHeight, 3, 1400);
     this.camera.position.set(118, 112, 150);
 
     const pm = new THREE.PMREMGenerator(r);
@@ -204,7 +204,7 @@ export class Maquete {
       const d = this.distRio(x, z);
       let h = 0;
       if (d < 8.5) h -= 1.9 * smooth(8.5, 3.0, d);
-      h += Math.sin(x * 0.11) * Math.cos(z * 0.09) * 0.06;
+      h -= 0.03;
       pos.setY(i, h);
       c.copy(verdes[Math.floor(rr() * 4)]);
       const n = Math.sin(x * 0.05 + 1.3) * Math.cos(z * 0.06) * 0.5 + 0.5;
@@ -305,10 +305,10 @@ export class Maquete {
   }
 
   criarRuas() {
-    const asfalto = new THREE.MeshStandardMaterial({ color: 0x454b57, roughness: 0.92 });
+    const asfalto = new THREE.MeshStandardMaterial({ color: 0x454b57, roughness: 0.92, polygonOffset: true, polygonOffsetFactor: -1, polygonOffsetUnits: -2 });
     const calcada = new THREE.MeshStandardMaterial({ color: 0xded6c8, roughness: 0.95 });
-    const faixa = new THREE.MeshStandardMaterial({ color: 0xffffff, roughness: 0.6 });
-    const amarela = new THREE.MeshStandardMaterial({ color: 0xffd23f, roughness: 0.6 });
+    const faixa = new THREE.MeshStandardMaterial({ color: 0xffffff, roughness: 0.6, polygonOffset: true, polygonOffsetFactor: -2, polygonOffsetUnits: -4 });
+    const amarela = new THREE.MeshStandardMaterial({ color: 0xffd23f, roughness: 0.6, polygonOffset: true, polygonOffsetFactor: -2, polygonOffsetUnits: -4 });
     const anel = new THREE.Mesh(new THREE.RingGeometry(ANEL_INT, ANEL_EXT, 160, 1), asfalto);
     anel.rotation.x = -Math.PI / 2; anel.position.y = 0.05; anel.receiveShadow = true; this.cena.add(anel);
     const ce = new THREE.Mesh(new THREE.RingGeometry(ANEL_EXT, CALCADA_EXT, 160, 1), calcada);
@@ -348,7 +348,7 @@ export class Maquete {
   criarPraca() {
     this.texPracaMorta = T.texPiso(false);
     this.texPracaViva = T.texPiso(true);
-    this.pracaMat = new THREE.MeshStandardMaterial({ map: this.texPracaMorta, roughness: 0.85 });
+    this.pracaMat = new THREE.MeshStandardMaterial({ map: this.texPracaMorta, roughness: 0.85, polygonOffset: true, polygonOffsetFactor: -1, polygonOffsetUnits: -2 });
     const praca = new THREE.Mesh(new THREE.CircleGeometry(RAIO_PRACA + 1, 128), this.pracaMat);
     praca.rotation.x = -Math.PI / 2; praca.position.y = 0.08; praca.receiveShadow = true;
     praca.userData.lote = 'centro';
@@ -694,7 +694,10 @@ export class Maquete {
     if (this.composer) { this.composer.renderTarget1.dispose(); this.composer.renderTarget2.dispose(); this.composer = null; }
     if (!q.pos) return;
     const pr = this.renderer.getPixelRatio();
-    const rt = new THREE.WebGLRenderTarget(w * pr, h * pr, { type: THREE.HalfFloatType, samples: q.msaa });
+    const gl = this.renderer.getContext();
+    const meiaPrecisao = !!(gl.getExtension('EXT_color_buffer_half_float') || gl.getExtension('EXT_color_buffer_float'));
+    const maxAmostras = gl.getParameter(gl.MAX_SAMPLES) || 0;
+    const rt = new THREE.WebGLRenderTarget(w * pr, h * pr, { type: meiaPrecisao ? THREE.HalfFloatType : THREE.UnsignedByteType, samples: Math.min(q.msaa, maxAmostras) });
     const c = (this.composer = new EffectComposer(this.renderer, rt));
     c.setPixelRatio(pr);
     c.setSize(w, h);
@@ -1043,8 +1046,27 @@ export class Maquete {
   }
 
   // ------------------------------------------------------------ laço principal
+  monitorarDesempenho(dt) {
+    // Se a placa de vídeo não acompanhar, reduz a qualidade em vez de deixar a tela travando ou piscando.
+    const m = (this.medidor ||= { t: 0, n: 0, espera: 4 });
+    if (!this.monitorAtivo || this.qualidade === 'leve' || document.hidden) { m.t = 0; m.n = 0; return; }
+    if (m.espera > 0) { m.espera -= dt; return; }
+    m.t += dt; m.n++;
+    if (m.t < 3) return;
+    const fps = m.n / m.t;
+    m.t = 0; m.n = 0;
+    if (fps < 24) {
+      const proxima = this.qualidade === 'ultra' ? 'alta' : 'leve';
+      this.setQualidade(proxima);
+      m.espera = 4;
+      this.callbacks.qualidade && this.callbacks.qualidade(proxima, Math.round(fps));
+    }
+  }
+
   quadro() {
-    const dtReal = Math.min(0.25, this.relogio.getDelta());
+    const dtBruto = this.relogio.getDelta();
+    this.monitorarDesempenho(dtBruto);
+    const dtReal = Math.min(0.25, dtBruto);
     const dt = Math.min(0.05, dtReal);
     this.tempo += dt;
     const t = this.tempo;
@@ -1136,7 +1158,11 @@ export class Maquete {
     // marcadores pulsantes (rótulos muito próximos da câmera ficam ocultos)
     for (const k in this.marcadores) {
       const m = this.marcadores[k];
-      if (this.marcadoresVisiveis) m.obj.visible = this.camera.position.distanceTo(m.obj.position) > 34;
+      if (this.marcadoresVisiveis) {
+        const d = this.camera.position.distanceTo(m.obj.position);
+        if (m.obj.visible && d < 30) m.obj.visible = false;
+        else if (!m.obj.visible && d > 40) m.obj.visible = true;
+      }
       if (m.anel.visible) { const s = 1 + Math.sin(t * 3) * 0.04; m.anel.scale.set(s, s, s); m.anel.material.opacity = 0.45 + Math.sin(t * 3) * 0.25; }
     }
 
