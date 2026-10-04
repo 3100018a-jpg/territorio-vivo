@@ -15,6 +15,7 @@ No GitHub, o workflow .github/workflows/pages.yml roda este script a cada public
 import asyncio
 import hashlib
 import json
+import re
 import sys
 from pathlib import Path
 
@@ -66,8 +67,16 @@ def listar_falas(c):
     return falas
 
 
-def nome_arquivo(p, t):
-    return hashlib.sha1(f"{p}|{t}".encode("utf-8")).hexdigest()[:16] + ".mp3"
+def nome_arquivo(p, t, voz):
+    # a voz entra no nome: se a voz de um apresentador mudar, as falas dele são regravadas
+    return hashlib.sha1(f"{p}|{t}|{voz}".encode("utf-8")).hexdigest()[:16] + ".mp3"
+
+
+def aplicar_pronuncia(texto, mapa):
+    """Troca siglas, números e palavras estrangeiras pela forma falada em português."""
+    for original in sorted((k for k in mapa if not k.startswith("_")), key=len, reverse=True):
+        texto = re.sub(r"(?<![\wÀ-ú])" + re.escape(original) + r"(?![\wÀ-ú])", mapa[original], texto)
+    return texto
 
 
 async def main():
@@ -82,7 +91,10 @@ async def main():
     falas = listar_falas(c)
     print(f"{len(falas)} falas para narrar.")
 
-    disponiveis = {v["ShortName"] for v in await edge_tts.list_voices()}
+    # Vozes "Multilingual" mudam de idioma no meio da frase e criam sotaque estrangeiro
+    # em palavras como "alternativa" e "mutirão". Só usamos vozes exclusivamente em português.
+    disponiveis = {v["ShortName"] for v in await edge_tts.list_voices() if "Multilingual" not in v["ShortName"]}
+    pronuncia = c.get("pronuncia", {})
     vozes = {}
     for p, per in c["personagens"].items():
         escolhida = next((v for v in per.get("edge", []) if v in disponiveis), None)
@@ -97,17 +109,18 @@ async def main():
 
     async def gerar(p, t):
         nonlocal falhas
-        arq = nome_arquivo(p, t)
+        voz, rate, pitch = vozes[p]
+        arq = nome_arquivo(p, t, f"{voz}{rate}{pitch}")
         destino = PASTA / arq
         if destino.exists() and destino.stat().st_size > 1000:
             manifesto[f"{p}|{t}"] = arq
             return
-        voz, rate, pitch = vozes[p]
+        falado = aplicar_pronuncia(t, pronuncia)
         async with sem:
             for tentativa in range(TENTATIVAS):
                 try:
                     tmp = destino.with_suffix(".tmp")
-                    await edge_tts.Communicate(t, voz, rate=rate, pitch=pitch).save(str(tmp))
+                    await edge_tts.Communicate(falado, voz, rate=rate, pitch=pitch).save(str(tmp))
                     tmp.replace(destino)
                     manifesto[f"{p}|{t}"] = arq
                     return

@@ -696,7 +696,7 @@ async function iniciar() {
   E = { ...estadoInicial(), ...(lerLocal(CHAVE) || {}) };
   sons = new Sons();
   sons.efeitos = cfg.efeitos;
-  narr = new Narrador(C.personagens);
+  narr = new Narrador(C.personagens, C.pronuncia || {});
   Object.assign(narr, { velocidade: cfg.velocidade, volume: cfg.volume, usarGravadas: cfg.gravadas, mudo: cfg.mudo });
   narr.onInicio = mostrarFala;
   narr.onFim = fimFala;

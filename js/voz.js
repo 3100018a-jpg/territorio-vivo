@@ -18,7 +18,21 @@ function pontuar(v) {
   if (/natural|neural|online|premium|enhanced|aprimorad/i.test(v.name)) s += 50;
   if (/google/i.test(v.name)) s += 12;
   if (/microsoft/i.test(v.name)) s += 6;
+  // vozes multilíngues trocam de idioma no meio da frase e soam com sotaque estrangeiro
+  if (/multilingual|multil[íi]ngue/i.test(v.name + ' ' + (v.voiceURI || ''))) s -= 80;
+  if (lang && !lang.startsWith('pt')) s -= 100;
   return s;
+}
+
+// Troca siglas, números e palavras estrangeiras pela forma falada em português (só na fala).
+export function aplicarPronuncia(texto, mapa = {}) {
+  let t = texto;
+  const chaves = Object.keys(mapa).filter((k) => !k.startsWith('_')).sort((a, b) => b.length - a.length);
+  for (const k of chaves) {
+    const re = new RegExp('(?<![\\wÀ-ú])' + k.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '(?![\\wÀ-ú])', 'g');
+    t = t.replace(re, mapa[k]);
+  }
+  return t;
 }
 
 function dividir(texto, max = 210) {
@@ -36,8 +50,9 @@ function dividir(texto, max = 210) {
 const espera = (ms) => new Promise((r) => setTimeout(r, ms));
 
 export class Narrador {
-  constructor(personagens) {
+  constructor(personagens, pronuncia = {}) {
     this.P = personagens;
+    this.pronuncia = pronuncia;
     this.manifesto = {};
     this.vozes = {};            // personagem -> voiceURI
     this.disponiveis = [];
@@ -201,7 +216,7 @@ export class Narrador {
       ctrl.timer = setTimeout(() => fim(), Math.max(1600, (texto.length * 62) / this.velocidade));
       return;
     }
-    const partes = dividir(texto);
+    const partes = dividir(aplicarPronuncia(texto, this.pronuncia));
     const per = this.P[p] || {};
     const voz = this.vozDe(p);
     let i = 0;
@@ -211,7 +226,7 @@ export class Narrador {
       const u = new SpeechSynthesisUtterance(partes[i]);
       ctrl.utter = u; // mantém referência (evita coleta de lixo no Chrome)
       if (voz) u.voice = voz;
-      u.lang = voz?.lang || 'pt-BR';
+      u.lang = 'pt-BR';
       u.pitch = Math.min(2, Math.max(0, (per.pitch ?? 1) * (this.ajustePitch[p] ?? 1)));
       u.rate = Math.min(2, Math.max(0.5, (per.rate ?? 1) * this.velocidade));
       u.volume = this.volume;
