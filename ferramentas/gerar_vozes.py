@@ -15,15 +15,19 @@ No GitHub, o workflow .github/workflows/pages.yml roda este script a cada public
 import asyncio
 import hashlib
 import json
+import os
+import random
 import re
 import sys
+import time
 from pathlib import Path
 
 RAIZ = Path(__file__).resolve().parent.parent
 CONTEUDO = RAIZ / "data" / "conteudo.json"
 PASTA = RAIZ / "audio"
-SIMULTANEAS = 6
-TENTATIVAS = 4
+SIMULTANEAS = 3
+TENTATIVAS = 6
+VOZES_RESERVA = {"pt-BR-FranciscaNeural", "pt-BR-AntonioNeural", "pt-BR-ThalitaNeural"}
 
 
 def carregar():
@@ -131,72 +135,111 @@ async def main():
     c = carregar()
     PASTA.mkdir(exist_ok=True)
     falas = listar_falas(c)
+    inicio = time.time()
+    status = {"total": len(falas), "comAudio": 0, "gerados": 0, "reaproveitados": 0, "falhas": 0, "erros": [], "vozes": {}}
+    manifesto = {}
     print(f"{len(falas)} falas para narrar.")
 
-    # Vozes "Multilingual" nunca são usadas: mesmo com o idioma marcado, elas podem
-    # pronunciar palavras como "alternativa" e "mutirão" com sotaque estrangeiro.
-    # Todos os apresentadores usam vozes que falam exclusivamente português do Brasil.
-    disponiveis = {v["ShortName"] for v in await edge_tts.list_voices()
-                   if v["ShortName"].startswith("pt-BR") and "Multilingual" not in v["ShortName"]}
-    print("Vozes pt-BR disponíveis:", ", ".join(sorted(disponiveis)))
-    pronuncia = c.get("pronuncia", {})
-    travado = travar_portugues(edge_tts)  # marca todo o texto como pt-BR (o padrão da ferramenta é en-US)
-    if travado and not await testar_voz(edge_tts, "pt-BR-FranciscaNeural", "+0%", "+0Hz"):
-        MODO_IDIOMA["lang"] = False
-    marca = "ptBR-mono-lang" if travado and MODO_IDIOMA["lang"] else ("ptBR-mono" if travado else "mono")
+    try:
+        # Vozes "Multilingual" nunca são usadas: mesmo com o idioma marcado, elas podem
+        # pronunciar palavras como "alternativa" e "mutirão" com sotaque estrangeiro.
+        disponiveis = None
+        for tentativa in range(4):
+            try:
+                disponiveis = {v["ShortName"] for v in await edge_tts.list_voices()
+                               if v["ShortName"].startswith("pt-BR") and "Multilingual" not in v["ShortName"]}
+                break
+            except Exception as e:  # noqa: BLE001
+                status["erros"].append(f"lista de vozes: {e!r}"[:300])
+                await asyncio.sleep(3 * (tentativa + 1))
+        if not disponiveis:
+            disponiveis = set(VOZES_RESERVA)
+            print("Não foi possível consultar a lista de vozes; usando as vozes de reserva.")
+        print("Vozes pt-BR disponíveis:", ", ".join(sorted(disponiveis)))
 
-    vozes = {}
-    for p, per in c["personagens"].items():
-        opcoes = []
-        for v in per.get("edge", []):
-            if isinstance(v, str):
-                opcoes.append((v, per.get("edgeRate", "+0%"), per.get("edgePitch", "+0Hz")))
-            else:
-                opcoes.append((v["voz"], v.get("rate", "+0%"), v.get("pitch", "+0Hz")))
-        escolha = next((o for o in opcoes if o[0] in disponiveis), None)
-        if not escolha:
-            reserva = "pt-BR-FranciscaNeural" if per.get("genero") == "feminino" else "pt-BR-AntonioNeural"
-            escolha = (reserva, per.get("edgeRate", "+0%"), per.get("edgePitch", "+0Hz"))
-        vozes[p] = escolha
-        print(f"  {per['nome']}: {escolha[0]} ({escolha[1]}, {escolha[2]})")
+        pronuncia = c.get("pronuncia", {})
+        travado = travar_portugues(edge_tts)  # marca todo o texto como pt-BR (o padrão da ferramenta é en-US)
+        if travado and not await testar_voz(edge_tts, "pt-BR-FranciscaNeural", "+0%", "+0Hz"):
+            MODO_IDIOMA["lang"] = False
+        marca = "ptBR-mono-lang" if travado and MODO_IDIOMA["lang"] else ("ptBR-mono" if travado else "mono")
+        status["modo"] = marca
 
-    manifesto = {}
-    sem = asyncio.Semaphore(SIMULTANEAS)
-    falhas = 0
+        vozes = {}
+        for p, per in c["personagens"].items():
+            opcoes = []
+            for v in per.get("edge", []):
+                if isinstance(v, str):
+                    opcoes.append((v, per.get("edgeRate", "+0%"), per.get("edgePitch", "+0Hz")))
+                else:
+                    opcoes.append((v["voz"], v.get("rate", "+0%"), v.get("pitch", "+0Hz")))
+            escolha = next((o for o in opcoes if o[0] in disponiveis and "Multilingual" not in o[0]), None)
+            if not escolha:
+                reserva = "pt-BR-FranciscaNeural" if per.get("genero") == "feminino" else "pt-BR-AntonioNeural"
+                escolha = (reserva, per.get("edgeRate", "+0%"), per.get("edgePitch", "+0Hz"))
+            vozes[p] = escolha
+            status["vozes"][p] = " ".join(escolha)
+            print(f"  {per['nome']}: {escolha[0]} ({escolha[1]}, {escolha[2]})")
 
-    async def gerar(p, t):
-        nonlocal falhas
-        voz, rate, pitch = vozes[p]
-        arq = nome_arquivo(p, t, f"{voz}{rate}{pitch}{marca}")
-        destino = PASTA / arq
-        if destino.exists() and destino.stat().st_size > 1000:
-            manifesto[f"{p}|{t}"] = arq
-            return
-        falado = aplicar_pronuncia(t, pronuncia)
-        async with sem:
-            for tentativa in range(TENTATIVAS):
-                try:
+        sem = asyncio.Semaphore(SIMULTANEAS)
+        pendentes = []
+
+        async def gerar(p, t, tentativas):
+            voz, rate, pitch = vozes[p]
+            arq = nome_arquivo(p, t, f"{voz}{rate}{pitch}{marca}")
+            destino = PASTA / arq
+            if destino.exists() and destino.stat().st_size > 1000:
+                manifesto[f"{p}|{t}"] = arq
+                status["reaproveitados"] += 1
+                return True
+            falado = aplicar_pronuncia(t, pronuncia)
+            async with sem:
+                for tentativa in range(tentativas):
                     tmp = destino.with_suffix(".tmp")
-                    await edge_tts.Communicate(falado, voz, rate=rate, pitch=pitch).save(str(tmp))
-                    tmp.replace(destino)
-                    manifesto[f"{p}|{t}"] = arq
-                    return
-                except Exception as e:  # noqa: BLE001
-                    if tentativa == TENTATIVAS - 1:
-                        falhas += 1
-                        print(f"  falhou: {p}: {t[:50]}… ({e})")
-                    await asyncio.sleep(1.5 * (tentativa + 1))
+                    try:
+                        await asyncio.wait_for(edge_tts.Communicate(falado, voz, rate=rate, pitch=pitch).save(str(tmp)), timeout=60)
+                        if tmp.exists() and tmp.stat().st_size > 1000:
+                            tmp.replace(destino)
+                            manifesto[f"{p}|{t}"] = arq
+                            status["gerados"] += 1
+                            await asyncio.sleep(0.15)
+                            return True
+                        raise RuntimeError("áudio vazio")
+                    except (Exception, asyncio.CancelledError) as e:  # noqa: BLE001
+                        tmp.unlink(missing_ok=True)
+                        if tentativa == tentativas - 1:
+                            if len(status["erros"]) < 15:
+                                status["erros"].append(f"{p}: {t[:40]}… → {e!r}"[:300])
+                        await asyncio.sleep(min(30, 1.5 * 2 ** tentativa) + random.random())
+            return False
 
-    await asyncio.gather(*(gerar(p, t) for p, t in falas))
-
-    # remove áudios que não pertencem mais ao conteúdo
-    validos = set(manifesto.values())
-    for f in PASTA.glob("*.mp3"):
-        if f.name not in validos:
-            f.unlink()
-
-    (PASTA / "manifest.json").write_text(json.dumps(manifesto, ensure_ascii=False, indent=0), encoding="utf-8")
-    print(f"Pronto: {len(manifesto)} áudios gerados, {falhas} falhas.")
+        resultados = await asyncio.gather(*(gerar(p, t, TENTATIVAS) for p, t in falas))
+        pendentes = [f for f, ok in zip(falas, resultados) if not ok]
+        if pendentes:
+            # segunda passada, mais lenta, para as falas que falharam (o serviço às vezes limita pedidos)
+            print(f"Repetindo {len(pendentes)} falas que falharam…")
+            await asyncio.sleep(20)
+            for p, t in pendentes:
+                await gerar(p, t, 4)
+    finally:
+        # o manifesto é sempre regravado, com todas as falas que têm áudio válido
+        validos = set(manifesto.values())
+        for f in PASTA.glob("*.mp3"):
+            if f.name not in validos:
+                f.unlink()
+        (PASTA / "manifest.json").write_text(json.dumps(manifesto, ensure_ascii=False, indent=0), encoding="utf-8")
+        status["comAudio"] = len(manifesto)
+        status["falhas"] = status["total"] - len(manifesto)
+        status["segundos"] = round(time.time() - inicio)
+        status["geradoEm"] = time.strftime("%Y-%m-%d %H:%M:%S UTC", time.gmtime())
+        (PASTA / "status.json").write_text(json.dumps(status, ensure_ascii=False, indent=1), encoding="utf-8")
+        resumo = (f"### Vozes neurais\n\n- Falas com áudio: **{status['comAudio']} de {status['total']}**\n"
+                  f"- Gravadas agora: {status['gerados']} · reaproveitadas: {status['reaproveitados']} · sem áudio: {status['falhas']}\n"
+                  + "".join(f"- {k}: `{v}`\n" for k, v in status["vozes"].items())
+                  + ("\n**Erros:**\n" + "".join(f"- {e}\n" for e in status["erros"]) if status["erros"] else ""))
+        print(resumo)
+        if os.environ.get("GITHUB_STEP_SUMMARY"):
+            with open(os.environ["GITHUB_STEP_SUMMARY"], "a", encoding="utf-8") as f:
+                f.write(resumo)
     return 0
 
 

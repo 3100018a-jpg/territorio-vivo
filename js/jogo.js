@@ -87,7 +87,8 @@ function estadoMissao(m) {
   if (E.concluidas[m.id]) return 'concluido';
   if (m.id === 'escuta') return 'disponivel';
   if (!E.concluidas.escuta) return 'bloqueado';
-  if (m.final && nConcluidas() < (m.minimo || 6)) return 'bloqueado';
+  // a missão final abre logo depois da missão 11 (Prédio que respira) ou com seis construções prontas
+  if (m.final && !E.concluidas.predioVerde && nConcluidas() < (m.minimo || 6)) return 'bloqueado';
   return 'disponivel';
 }
 

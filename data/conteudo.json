@@ -246,7 +246,7 @@
       },
       "bloqueadaFinal": {
         "p": "jurema",
-        "t": "A Casa do Conselho só se abre depois que o bairro tiver pelo menos seis construções. Continue as missões!"
+        "t": "A Casa do Conselho se abre assim que o bairro concluir a missão Prédio que respira, ou quando já tiver pelo menos seis construções. Continue as missões!"
       },
       "sementesInsuf": {
         "p": "teo",
