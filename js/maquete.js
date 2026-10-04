@@ -937,7 +937,7 @@ export class Maquete {
   analisarPosicao(tipo, x, z) {
     if (Math.hypot(x, z) < ANEL_INT) {
       if (!ARVORES.includes(tipo)) return { ok: false, motivo: 'pracaSoArvores' };
-      if (!this.construidos.centro) return { ok: false, motivo: 'pracaSemCanteiros' };
+      if (!this.dossel) return { ok: false, motivo: 'pracaSemCanteiros' };
       let melhor = null, dm = 3.5;
       for (const v of M.VAGAS_PRACA) { const d = Math.hypot(v.x - x, v.z - z); if (d < dm) { dm = d; melhor = v; } }
       if (!melhor) return { ok: false, motivo: 'pracaSoArvores' };
@@ -947,9 +947,41 @@ export class Maquete {
     return this.podeColocar(x, z) ? { ok: true, x, z } : { ok: false, motivo: 'terreno' };
   }
 
-  dosselContinuo() { return !!this.construidos.centro?.userData.dosselContinuo; }
+  dosselContinuo() { return !!this.dossel?.userData.dosselContinuo; }
+
+  // Mutirão final: planta o anel de árvores nativas e os canteiros na praça.
+  plantarDossel(animar = true) {
+    if (this.dossel) return Promise.resolve();
+    const g = M.dosselPraca();
+    g.position.y = 0.08;
+    this.cena.add(g);
+    this.dossel = g;
+    this.copasPraca = [...(this.copasPraca || []), ...g.userData.copas];
+    if (this.medidor) { this.medidor.espera = 3; this.medidor.t = 0; this.medidor.n = 0; }
+    if (!animar) return Promise.resolve();
+    const pecas = g.children.slice();
+    const finais = pecas.map((p) => p.scale.clone());
+    pecas.forEach((p) => p.scale.setScalar(0.0001));
+    const passo = 0.14, dur = 0.9, total = pecas.length * passo + dur;
+    this.explosao(new THREE.Vector3(0, 1, 0), 16);
+    return new Promise((res) => {
+      this.animacoes.push({
+        t: 0,
+        passo: (t) => {
+          pecas.forEach((p, i) => {
+            const ti = (t - i * passo) / dur;
+            if (ti <= 0) return;
+            p.scale.copy(finais[i]).multiplyScalar(Math.max(0.0001, ti >= 1 ? 1 : easeOutBack(ti)));
+          });
+          if (t >= total) { pecas.forEach((p, i) => p.scale.copy(finais[i])); this.explosao(new THREE.Vector3(0, 5, 0), 15, true); res(); return true; }
+          return false;
+        },
+      });
+    });
+  }
 
   vagasLivresPraca() {
+    if (!this.dossel) return 0;
     return M.VAGAS_PRACA.filter((v) => !this.itens.some((i) => Math.hypot(i.x - v.x, i.z - v.z) < 0.5)).length;
   }
 

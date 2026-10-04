@@ -16,7 +16,7 @@ Jogo educativo em 3D, pronto para o **GitHub Pages**, sobre **projetos socioambi
 | 🪜 **5 etapas por missão** | Diagnóstico, priorização, planejamento, implementação e acompanhamento. |
 | ❓ **73 perguntas** | Múltipla escolha diversificada: situação-problema, conceito, legislação, interdisciplinar, decisão pedagógica, indicadores e **dilemas participativos**. As alternativas, corretas e distratoras, têm tamanhos semelhantes (variação máxima de 15%) e são **embaralhadas a cada vez**. |
 | 🗳️ **Dilemas participativos** | Cada alternativa corresponde a um degrau da escada da participação: **informação, consulta, cogestão ou autonomia**. O **participômetro** mostra o nível das suas decisões. |
-| 🌳 **Dossel da praça** | A missão da praça cria um anel de 20 árvores nativas (ipês, oitis, sibipirunas e pitangueiras) com copas que se encostam e sombreiam a calçada e os bancos. O indicador **Sombra na praça** mostra a porcentagem do piso coberta pelas copas, e a Engenheira Lia explica a relação com as ilhas de calor quando o dossel se fecha. |
+| 🌳 **Dossel da praça** | Ao final do jogo, a primeira decisão do Conselho do Território (13ª e última missão) é um mutirão que planta na praça um anel de 20 árvores nativas (ipês, oitis, sibipirunas e pitangueiras) com copas que se encostam e sombreiam a calçada e os bancos. O indicador **Sombra na praça** mostra a porcentagem do piso coberta pelas copas, e a Engenheira Lia explica a relação com as ilhas de calor quando o dossel se fecha. |
 | 🌿 **Ações sustentáveis** | Com as sementes conquistadas, você espalha pelo bairro e pelos canteiros circulares da praça ipês, oitis, sibipirunas, pitangueiras, canteiros de polinizadores, abelhas sem ferrão, bancos de pallet, lixeiras seletivas, composteiras, cisternas, postes solares e bicicletários. |
 | 📊 **Indicadores do território** | Biodiversidade, água, resíduos, comunidade e economia local. Eles mudam a maquete: a grama fica mais verde, o rio fica limpo, o lixo some e mais pessoas aparecem nas ruas. |
 | 🎙️ **Narração oral completa** | Missões, etapas, perguntas, alternativas, painéis, itens e orientações são narrados por **quatro apresentadores**, cada um com papel, gênero e voz próprios. |
@@ -50,7 +50,7 @@ Jogo educativo em 3D, pronto para o **GitHub Pages**, sobre **projetos socioambi
 | 9 | Casa boa é direito | Arquitetura social e reforma de moradias |
 | 10 | Mãos que transformam | Oficinas de reaproveitamento |
 | 11 | Prédio que respira | Prédio com certificação verde |
-| 12 | Conselho do Território *(final)* | Casa do Conselho e Mapa Interdisciplinar de Participação |
+| 12 | Conselho do Território *(final)* | Casa do Conselho, Mapa Interdisciplinar de Participação e mutirão do dossel contínuo da praça |
 
 ---
 

@@ -226,14 +226,6 @@ async function abrirMissao(id) {
     const fala = narr.falar('lia', m.ficha.texto);
     await Promise.all([anim, fala]);
     sons.conquista();
-    if (m.lote === 'centro') {
-      const cob = maquete.coberturaPraca();
-      if (maquete.dosselContinuo() && !E.dosselFechado) {
-        E.dosselFechado = true; salvar();
-        toast(`🌳 Dossel fechado: ${cob}% da praça na sombra`, 'var(--verde)');
-        await falar(C.sistema.paineis.dosselFechado);
-      }
-    }
     await narr.sequencia(m.encerramento);
   }
   // pontuação e indicadores
@@ -257,6 +249,19 @@ async function abrirMissao(id) {
   fecharFicha();
   emMissao = false;
   if (m.final && !anterior) {
+    // primeira decisão do Conselho: o mutirão que planta o dossel contínuo da praça
+    await maquete.focarLote('centro');
+    await falar(C.sistema.paineis.dosselMutirao);
+    sons.construir();
+    await maquete.plantarDossel(true);
+    sons.conquista();
+    const cob = maquete.coberturaPraca();
+    if (maquete.dosselContinuo() && !E.dosselFechado) {
+      E.dosselFechado = true; salvar();
+      toast(`🌳 Dossel fechado: ${cob}% da praça na sombra`, 'var(--verde)');
+      atualizarHUD();
+      await falar(C.sistema.paineis.dosselFechado);
+    }
     await maquete.visaoGeral();
     maquete.explosao({ x: 0, y: 6, z: 0 }, 30, true);
     sons.conquista();
@@ -745,6 +750,7 @@ async function iniciar() {
   await narr.init(cfg.vozes);
   // restaura progresso salvo
   for (const id in E.concluidas) { const m = missao(id); if (m) maquete.construir(m.lote, m.construcao, false); }
+  if (E.concluidas.conselho) maquete.plantarDossel(false);
   E.itens.forEach((i) => maquete.colocarItem(i.tipo, i.x, i.z, false, i.seed));
   maquete.aplicarIndicadores(E.ind);
   ligarEventos();

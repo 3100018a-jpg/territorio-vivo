@@ -520,19 +520,8 @@ function rodaEscuta() {
     const ps = [new THREE.Vector2(r1, h), new THREE.Vector2(r1 + 0.95, h), new THREE.Vector2(r1 + 0.95, h + 0.1), new THREE.Vector2(r1, h + 0.1), new THREE.Vector2(r1, h)];
     g.add(malha(new THREE.LatheGeometry(ps, 72, gap / 2, Math.PI * 2 - gap), mat(MADEIRA, { r: 0.6 })));
   });
-  // dossel contínuo: 20 árvores nativas em anel (a cada 18°), com as copas se encostando
   const pos = (graus, r) => { const a = (graus * Math.PI) / 180; return [Math.cos(a) * r, Math.sin(a) * r]; };
-  for (let k = 0; k < 20; k++) {
-    const graus = 9 + k * 18;
-    const esp = ESPECIES_DOSSEL[k % ESPECIES_DOSSEL.length];
-    const [x, z] = pos(graus, RAIO_DOSSEL);
-    const t = esp.faz(esp.escala, 500 + k);
-    t.position.set(x, 0, z);
-    t.rotation.y = k * 1.7;
-    g.add(t);
-    copas.push({ x, z, r: esp.escala * esp.copa });
-  }
-  // canteiros de flores entre os troncos
+  // canteiros de flores
   [54, 126, 234, 306].forEach((graus, i) => {
     const [x, z] = pos(graus, RAIO_DOSSEL);
     const c = canteiroFlores(3.0, 1.2, 20 + i);
@@ -541,7 +530,7 @@ function rodaEscuta() {
     c.rotation.y = -(a + Math.PI / 2);
     g.add(c);
   });
-  // bancos à sombra, voltados para a roda
+  // bancos voltados para a roda
   [75, 105, 165, 195, 250, 290].forEach((graus) => {
     const [x, z] = pos(graus, 15.6);
     const b = banco(0xc9a26b);
@@ -549,8 +538,6 @@ function rodaEscuta() {
     b.rotation.y = Math.atan2(-x, -z);
     g.add(b);
   });
-  // canteiros circulares vazios para o plantio dos jogadores
-  VAGAS_PRACA.forEach((v) => { const c = canteiroArvore(); c.position.set(v.x, 0, v.z); g.add(c); });
   // tenda de diálogo (fundo da praça)
   const tt = new THREE.Group();
   [[-1, -1], [1, -1], [-1, 1], [1, 1]].forEach(([a, b]) => tt.add(cil(0.07, 0.07, 2.6, 0xf5f0e6, a * 1.5, 0, b * 1.5)));
@@ -566,10 +553,11 @@ function rodaEscuta() {
   for (let i = 0; i < 7; i++) varal.add(caixa(0.36, 0.46, 0.02, pal[i % pal.length], -1.65 + i * 0.55, 1.6, 0, { arred: false, ds: true }));
   const [vx, vz] = pos(0, 16.6);
   g.add(em(varal, vx, 0, vz, -Math.PI / 2));
-  // bandeirolas do ipê central até as copas do anel
+  // bandeirolas do ipê central até mastros ao redor
   const topo = new THREE.Vector3(0, 7.2, 0);
   for (let i = 0; i < 6; i++) {
     const [x, z] = pos(9 + i * 54, RAIO_DOSSEL - 0.6);
+    g.add(cil(0.07, 0.08, 4.5, 0xf5f0e6, x, 0, z));
     g.add(bandeirolas(topo, new THREE.Vector3(x, 4.4, z), 9, i + 1));
   }
   // pessoas na roda
@@ -583,10 +571,31 @@ function rodaEscuta() {
     g.add(p);
   }
   g.userData.copas = copas;
+  return g;
+}
+
+// Dossel da praça: plantado no mutirão final, depois da missão do Conselho do Território.
+export function dosselPraca() {
+  const g = new THREE.Group();
+  const copas = [];
+  // 20 árvores nativas em anel (a cada 18°), com as copas se encostando
+  const pos = (graus, r) => { const a = (graus * Math.PI) / 180; return [Math.cos(a) * r, Math.sin(a) * r]; };
+  for (let k = 0; k < 20; k++) {
+    const graus = 9 + k * 18;
+    const esp = ESPECIES_DOSSEL[k % ESPECIES_DOSSEL.length];
+    const [x, z] = pos(graus, RAIO_DOSSEL);
+    const t = esp.faz(esp.escala, 500 + k);
+    t.position.set(x, 0, z);
+    t.rotation.y = k * 1.7;
+    g.add(t);
+    copas.push({ x, z, r: esp.escala * esp.copa });
+  }
+  // canteiros circulares vazios para o plantio dos jogadores
+  VAGAS_PRACA.forEach((v) => { const c = canteiroArvore(); c.position.set(v.x, 0, v.z); g.add(c); });
+  g.userData.copas = copas;
   // o dossel é contínuo quando cada copa do anel encosta na copa vizinha
-  const anel = copas.slice(1);
-  g.userData.dosselContinuo = anel.every((c, i) => {
-    const v = anel[(i + 1) % anel.length];
+  g.userData.dosselContinuo = copas.every((c, i) => {
+    const v = copas[(i + 1) % copas.length];
     return Math.hypot(c.x - v.x, c.z - v.z) <= c.r + v.r;
   });
   return g;

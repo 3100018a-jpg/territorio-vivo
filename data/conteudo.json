@@ -306,7 +306,7 @@
       },
       "pracaSemCanteiros": {
         "p": "teo",
-        "t": "Os canteiros da praça ainda não existem. Conclua a missão da Roda de Escuta para preparar a praça."
+        "t": "Os canteiros da praça só surgem no mutirão do dossel, ao final da missão do Conselho do Território. Até lá, plante no restante do bairro."
       },
       "canteiroOcupado": {
         "p": "teo",
@@ -315,6 +315,10 @@
       "sombraPraca": {
         "p": "lia",
         "t": "Este é o indicador de sombra na praça: a porcentagem do piso coberta pelas copas das árvores. Quanto maior a sombra, menor a ilha de calor e maior o conforto de quem usa a praça."
+      },
+      "dosselMutirao": {
+        "p": "jurema",
+        "t": "E a primeira decisão do Conselho foi tomada por todos: devolver a sombra à nossa praça. Vamos ao mutirão de plantio das árvores nativas!"
       }
     },
     "final": [
@@ -503,22 +507,22 @@
         }
       ],
       "ficha": {
-        "texto": "Roda de Escuta da Praça Viva: uma arquibancada circular sob um dossel contínuo de vinte árvores nativas, entre ipês, oitis, sibipirunas e pitangueiras, com copas que se encostam e sombreiam a calçada e os bancos. A tenda de diálogo e o varal de ideias completam o lugar onde a escuta se transforma em decisão compartilhada.",
+        "texto": "Roda de Escuta da Praça Viva: uma arquibancada circular à sombra do grande ipê, com bancos, tenda de diálogo, varal de ideias e bandeirolas. É o lugar onde a escuta se transforma em decisão compartilhada.",
         "itens": [
-          "Dossel contínuo com 20 árvores nativas",
           "Arquibancada circular acessível",
-          "Bancos à sombra e canteiros para novas árvores",
-          "Tenda de diálogo e varal de ideias"
+          "Ipê-amarelo da memória",
+          "Tenda de diálogo e varal de ideias",
+          "Canteiros com flores nativas"
         ]
       },
       "encerramento": [
         {
           "p": "jurema",
-          "t": "A praça ganhou um teto verde de árvores e uma roda para conversar. Agora, cada projeto do bairro começa aqui, na sombra, com a gente decidindo junto."
+          "t": "A praça ganhou uma roda para conversar, à sombra do nosso ipê. Agora, cada projeto do bairro começa aqui, com a gente decidindo junto."
         }
       ],
       "indicadores": {
-        "verde": 14,
+        "verde": 8,
         "agua": 2,
         "residuos": 6,
         "comunidade": 14,
@@ -2441,12 +2445,12 @@
         }
       ],
       "ficha": {
-        "texto": "Casa do Conselho do Território: um espaço acessível de decisão coletiva, com roda de conversa, mapa interdisciplinar, painel de indicadores e brinquedoteca, para que mães e pais também possam participar.",
+        "texto": "Casa do Conselho do Território: um espaço acessível de decisão coletiva, com roda de conversa, mapa interdisciplinar, painel de indicadores e brinquedoteca, para que mães e pais também possam participar. Sua primeira decisão é o mutirão que planta o dossel contínuo da praça.",
         "itens": [
           "Roda de conversa acessível",
           "Mapa Interdisciplinar de Participação",
-          "Painel público de indicadores",
-          "Brinquedoteca para incluir famílias"
+          "Brinquedoteca para incluir famílias",
+          "Mutirão do dossel contínuo da praça"
         ]
       },
       "encerramento": [
@@ -2456,7 +2460,7 @@
         }
       ],
       "indicadores": {
-        "verde": 6,
+        "verde": 14,
         "agua": 4,
         "residuos": 4,
         "comunidade": 20,
