@@ -21,6 +21,7 @@ Jogo educativo em 3D, pronto para o **GitHub Pages**, sobre **projetos socioambi
 | 🎙️ **Narração oral completa** | Missões, etapas, perguntas, alternativas, painéis, itens e orientações são narrados por **quatro apresentadores**, cada um com papel, gênero e voz próprios. |
 | ⚡ **Desafio Relâmpago** | Dez perguntas sorteadas de todo o jogo. |
 | 🏅 **Certificado** | Gerado ao concluir a missão final, pronto para imprimir ou salvar em PDF. |
+| ⚙️ **Gráficos adaptáveis** | O jogo estima a capacidade da placa de vídeo e mede os quadros por segundo enquanto você joga. Se o computador não acompanhar, os gráficos descem um degrau por vez (Ultra → Alta → Média → Leve → Mínima) e voltam a melhorar quando houver folga. Em **⚙️ Vozes e gráficos** é possível fixar um nível. |
 | 📱 **Responsivo e acessível** | Funciona no computador, no tablet e no celular. Tem legendas sincronizadas, atalhos de teclado (A–D ou 1–4 para responder, Enter para continuar, Esc para fechar) e respeita a opção de reduzir animações. |
 
 ### Os apresentadores

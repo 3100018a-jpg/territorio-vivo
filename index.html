@@ -165,7 +165,15 @@
         <label class="ck"><input type="checkbox" id="cfgEfeitos" /> Efeitos sonoros</label>
         <label class="ck"><input type="checkbox" id="cfgTilt" /> Efeito miniatura (desfoque de maquete)</label>
         <label>Qualidade gráfica
-          <select id="cfgQualidade"><option value="leve">Leve (celulares)</option><option value="alta">Alta</option><option value="ultra">Ultra (4K)</option></select>
+          <select id="cfgQualidade">
+            <option value="auto">Automática (recomendada)</option>
+            <option value="ultra">Ultra (placas de vídeo potentes)</option>
+            <option value="alta">Alta</option>
+            <option value="media">Média</option>
+            <option value="leve">Leve</option>
+            <option value="minima">Mínima (computadores antigos)</option>
+          </select>
+          <small id="cfgQualidadeInfo" class="cfg-info"></small>
         </label>
       </div>
       <div class="cfg-rodape"><button id="cfgReiniciar" class="perigo">Reiniciar progresso</button><button class="primario" data-fechar="modalConfig">Pronto</button></div>

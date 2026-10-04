@@ -22,11 +22,40 @@ export const LOTES = (() => {
   return L;
 })();
 
-const QUALIDADES = {
-  leve: { pr: 1, sombra: 1024, grama: 7000, flores: 900, pos: false, msaa: 0, arvores: 0.6 },
-  alta: { pr: 1.5, sombra: 2048, grama: 18000, flores: 1800, pos: true, msaa: 4, arvores: 1 },
-  ultra: { pr: 2, sombra: 4096, grama: 32000, flores: 2600, pos: true, msaa: 4, arvores: 1 },
+// Níveis de qualidade, do mais pesado ao mais leve. O ajuste automático percorre esta escada.
+export const NIVEIS = ['ultra', 'alta', 'media', 'leve', 'minima'];
+export const QUALIDADES = {
+  ultra:  { nome: 'Ultra',  pr: 2,    sombra: 4096, sombras: true,  grama: 32000, flores: 2600, pos: true,  msaa: 4, vida: 1,    luzes: true },
+  alta:   { nome: 'Alta',   pr: 1.5,  sombra: 2048, sombras: true,  grama: 18000, flores: 1800, pos: true,  msaa: 4, vida: 1,    luzes: true },
+  media:  { nome: 'Média',  pr: 1.25, sombra: 2048, sombras: true,  grama: 11000, flores: 1300, pos: false, msaa: 0, vida: 0.85, luzes: true },
+  leve:   { nome: 'Leve',   pr: 1,    sombra: 1024, sombras: true,  grama: 6000,  flores: 900,  pos: false, msaa: 0, vida: 0.7,  luzes: false },
+  minima: { nome: 'Mínima', pr: 0.75, sombra: 512,  sombras: false, grama: 2000,  flores: 400,  pos: false, msaa: 0, vida: 0.45, luzes: false },
 };
+
+// Estima, antes de abrir a maquete, o nível que o computador aguenta.
+export function qualidadeInicial() {
+  let gpu = '';
+  try {
+    const c = document.createElement('canvas');
+    const gl = c.getContext('webgl2') || c.getContext('webgl');
+    if (gl) {
+      const ext = gl.getExtension('WEBGL_debug_renderer_info');
+      gpu = String(ext ? gl.getParameter(ext.UNMASKED_RENDERER_WEBGL) : gl.getParameter(gl.RENDERER));
+      const perder = gl.getExtension('WEBGL_lose_context');
+      perder && perder.loseContext();
+    }
+  } catch { /* sem informação da placa */ }
+  const g = gpu.toLowerCase();
+  const descer = (n) => NIVEIS[Math.min(NIVEIS.length - 1, NIVEIS.indexOf(n) + 1)];
+  if (/swiftshader|llvmpipe|softpipe|software|basic render/.test(g)) return { nivel: 'minima', gpu };
+  let nivel = 'alta';
+  if (/intel|uhd|iris|hd graphics|mali|adreno|powervr|videocore|apple gpu/.test(g)) nivel = 'media';
+  const movel = matchMedia('(pointer: coarse)').matches || innerWidth < 820;
+  if (movel) nivel = 'leve';
+  const nucleos = navigator.hardwareConcurrency || 8, memoria = navigator.deviceMemory || 8;
+  if (nucleos <= 4 || memoria <= 4) nivel = descer(nivel);
+  return { nivel, gpu };
+}
 
 const TiltShiftShader = {
   uniforms: { tDiffuse: { value: null }, resolucao: { value: new THREE.Vector2(1, 1) }, foco: { value: 0.47 }, faixa: { value: 0.4 }, forca: { value: 1.5 } },
@@ -54,7 +83,10 @@ const easeInOut = (t) => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) 
 export class Maquete {
   constructor(container, opcoes = {}) {
     this.container = container;
-    this.qualidade = opcoes.qualidade || 'alta';
+    this.qualidade = QUALIDADES[opcoes.qualidade] ? opcoes.qualidade : 'alta';
+    this.auto = opcoes.auto ?? true;           // ajuste automático ligado
+    this.teto = opcoes.teto || this.qualidade; // nível máximo que o ajuste automático pode alcançar
+    this.fpsAtual = null;
     this.tiltShift = opcoes.tiltShift ?? true;
     this.tempo = 0;
     this.tempoDia = 0.4; this.alvoDia = 0.4; this.velDia = 0;
@@ -156,7 +188,7 @@ export class Maquete {
     this.hemi = new THREE.HemisphereLight(0xbfe6ff, 0x6aa84f, 1.1);
     this.cena.add(this.hemi);
     const sol = (this.sol = new THREE.DirectionalLight(0xfff4e0, 3));
-    sol.castShadow = true;
+    sol.castShadow = QUALIDADES[this.qualidade].sombras;
     const sc = sol.shadow.camera;
     sc.left = -105; sc.right = 105; sc.top = 105; sc.bottom = -105; sc.near = 10; sc.far = 420;
     sol.shadow.mapSize.set(QUALIDADES[this.qualidade].sombra, QUALIDADES[this.qualidade].sombra);
@@ -716,8 +748,10 @@ export class Maquete {
     this.qualidade = nome;
     const q = QUALIDADES[nome];
     this.renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, q.pr));
+    this.sol.castShadow = q.sombras;
     this.sol.shadow.mapSize.set(q.sombra, q.sombra);
     if (this.sol.shadow.map) { this.sol.shadow.map.dispose(); this.sol.shadow.map = null; }
+    if (this.medidor) { this.medidor.espera = 2.5; this.medidor.t = 0; this.medidor.n = 0; }
     this.grama.count = Math.min(this.gramaMax, q.grama);
     this.configurarPos();
     this.aplicarIndicadores(this.ind);
@@ -813,6 +847,7 @@ export class Maquete {
     if (!fab) return Promise.resolve();
     const l = LOTES[lote];
     const g = fab();
+    if (this.medidor) { this.medidor.espera = 3; this.medidor.t = 0; this.medidor.n = 0; }
     g.position.set(l.x, lote === 'centro' ? 0.08 : 0.12, l.z);
     g.rotation.y = l.rot || 0;
     g.userData.loteConstruido = lote;
@@ -962,12 +997,13 @@ export class Maquete {
     this.rioMat.opacity = lerp(0.95, 0.84, agua);
     const res = smooth(10, 70, ind.residuos);
     if (this.lixo) this.lixo.count = Math.round(this.lixoMax * (1 - res));
-    const nPed = Math.round(lerp(8, 52, smooth(15, 90, ind.comunidade)));
+    const vida = QUALIDADES[this.qualidade].vida;
+    const nPed = Math.round(lerp(8, 52, smooth(15, 90, ind.comunidade)) * vida);
     this.pedestres.forEach((p, i) => (p.obj.visible = i < nPed));
-    const nPas = Math.round(lerp(3, 18, verde));
+    const nPas = Math.round(lerp(3, 18, verde) * vida);
     this.passaros.forEach((b, i) => (b.visible = i < nPas));
     const lotesVerdes = Object.keys(this.construidos);
-    const nBor = Math.min(24, Math.round(lerp(0, 24, verde)));
+    const nBor = Math.min(24, Math.round(lerp(0, 24, verde) * vida));
     this.borboletas.forEach((b, i) => {
       b.visible = i < nBor;
       const k = lotesVerdes.length ? lotesVerdes[i % lotesVerdes.length] : null;
@@ -1035,7 +1071,7 @@ export class Maquete {
     this.renderer.toneMappingExposure = lerp(1.25, 1.05, dia);
     // luzes noturnas
     M.NOTURNOS.forEach(({ mat, max }) => (mat.emissiveIntensity = noite * max));
-    const altaQ = this.qualidade !== 'leve';
+    const altaQ = QUALIDADES[this.qualidade].luzes;
     this.luzesPraca.forEach((l) => (l.intensity = altaQ ? noite * 28 : 0));
     this.vagaMat.opacity = noite * 0.95 * (1 - ch);
     if (this.bloom) this.bloom.strength = 0.22 + noite * 0.65;
@@ -1047,19 +1083,39 @@ export class Maquete {
 
   // ------------------------------------------------------------ laço principal
   monitorarDesempenho(dt) {
-    // Se a placa de vídeo não acompanhar, reduz a qualidade em vez de deixar a tela travando ou piscando.
-    const m = (this.medidor ||= { t: 0, n: 0, espera: 4 });
-    if (!this.monitorAtivo || this.qualidade === 'leve' || document.hidden) { m.t = 0; m.n = 0; return; }
+    // Mede os quadros por segundo em janelas de 2,5 s. Se o computador não acompanhar,
+    // desce um degrau de qualidade; se sobrar folga por bastante tempo, sobe um degrau (até o teto).
+    let m = this.medidor;
+    if (!m) {
+      m = this.medidor = { t: 0, n: 0, espera: 3, lentos: 0, folgados: 0, ignorar: false };
+      // ao voltar de outra aba, o primeiro quadro é longo e não deve contar
+      document.addEventListener('visibilitychange', () => { m.ignorar = true; });
+    }
+    if (!this.monitorAtivo || document.hidden) { m.t = 0; m.n = 0; return; }
+    if (m.ignorar) { m.ignorar = false; m.t = 0; m.n = 0; return; }
     if (m.espera > 0) { m.espera -= dt; return; }
     m.t += dt; m.n++;
-    if (m.t < 3) return;
+    if (m.t < 2.5) return;
+    const amostras = m.n;
     const fps = m.n / m.t;
     m.t = 0; m.n = 0;
-    if (fps < 24) {
-      const proxima = this.qualidade === 'ultra' ? 'alta' : 'leve';
-      this.setQualidade(proxima);
-      m.espera = 4;
-      this.callbacks.qualidade && this.callbacks.qualidade(proxima, Math.round(fps));
+    this.fpsAtual = Math.round(fps);
+    if (!this.auto) return;
+    if (fps < 28) { m.lentos++; m.folgados = 0; }
+    else if (fps > 55) { m.folgados++; m.lentos = 0; }
+    else { m.lentos = 0; m.folgados = 0; }
+    const i = NIVEIS.indexOf(this.qualidade);
+    if (((fps < 12 && amostras >= 3) || m.lentos >= 2) && i < NIVEIS.length - 1) {
+      // se acabou de subir e voltou a pesar, aquele nível passa a ser o limite
+      if (this.ultimaSubida && performance.now() - this.ultimaSubida < 30000) this.teto = NIVEIS[i + 1];
+      m.lentos = 0; m.folgados = 0;
+      this.setQualidade(NIVEIS[i + 1]);
+      this.callbacks.qualidade && this.callbacks.qualidade(NIVEIS[i + 1], this.fpsAtual, 'desceu');
+    } else if (m.folgados >= 4 && i > NIVEIS.indexOf(this.teto)) {
+      m.lentos = 0; m.folgados = 0;
+      this.ultimaSubida = performance.now();
+      this.setQualidade(NIVEIS[i - 1]);
+      this.callbacks.qualidade && this.callbacks.qualidade(NIVEIS[i - 1], this.fpsAtual, 'subiu');
     }
   }
 

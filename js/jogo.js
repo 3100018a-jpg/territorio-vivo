@@ -1,5 +1,5 @@
 // Lógica do jogo Território Vivo: missões, perguntas, narração, pontuação, ações sustentáveis e progresso.
-import { Maquete, LOTES } from './maquete.js';
+import { Maquete, LOTES, QUALIDADES, qualidadeInicial } from './maquete.js';
 import { Narrador } from './voz.js';
 import { Sons } from './sons.js';
 import { AVATARES } from './avatares.js';
@@ -31,7 +31,7 @@ function estadoInicial() {
   return { sementes: 20, concluidas: {}, dilemas: [], ind, itens: [], nome: '', recordeDesafio: 0, introVista: false };
 }
 const salvar = () => gravarLocal(CHAVE, E);
-const cfgPadrao = () => ({ vozes: {}, velocidade: 1, volume: 1, gravadas: true, alternativas: true, ambiente: true, efeitos: true, tilt: true, qualidade: matchMedia('(pointer: coarse)').matches || innerWidth < 820 ? 'leve' : 'alta', mudo: false });
+const cfgPadrao = () => ({ vozes: {}, velocidade: 1, volume: 1, gravadas: true, alternativas: true, ambiente: true, efeitos: true, tilt: true, qualidade: 'auto', qualidadeAuto: null, versaoQualidade: 2, mudo: false });
 const salvarCfg = () => gravarLocal(CHAVE_CFG, cfg);
 
 function toast(txt, cor = 'var(--verde)') {
@@ -457,6 +457,14 @@ function escolherItem(it) {
 function sairColocacao() { maquete.cancelarColocacao(); $('#barraColocar').classList.add('oculto'); }
 
 // ------------------------------------------------------------ configurações
+function atualizarInfoQualidade() {
+  const el = $('#cfgQualidadeInfo');
+  if (!el || !maquete) return;
+  const nome = QUALIDADES[maquete.qualidade].nome;
+  const fps = maquete.fpsAtual ? ` · ${maquete.fpsAtual} ${maquete.fpsAtual === 1 ? 'quadro' : 'quadros'} por segundo` : '';
+  el.textContent = maquete.auto ? `Agora: ${nome}${fps}. O jogo reduz ou melhora os gráficos sozinho conforme o computador acompanha.` : `Fixa em ${nome}${fps}. O ajuste automático está desligado.`;
+}
+
 function montarConfig() {
   const modo = narr.modoGravado ? '🎙️ Vozes neurais gravadas ativas: cada apresentador tem uma voz humana própria.' :
     narr.disponiveis.length ? `🗣️ Vozes do navegador: ${narr.vozesPortugues().length} voz(es) em português encontradas. Escolha uma voz diferente para cada apresentador.` :
@@ -487,6 +495,7 @@ function montarConfig() {
   $('#cfgEfeitos').checked = cfg.efeitos;
   $('#cfgTilt').checked = cfg.tilt;
   $('#cfgQualidade').value = cfg.qualidade;
+  atualizarInfoQualidade();
 }
 function amostra(p) {
   const f = C.sistema.abertura.find((x) => x.p === p);
@@ -502,7 +511,21 @@ function ligarConfig() {
   $('#cfgAmbiente').addEventListener('change', (e) => { cfg.ambiente = e.target.checked; sons.ambiente(cfg.ambiente); salvarCfg(); });
   $('#cfgEfeitos').addEventListener('change', (e) => { cfg.efeitos = e.target.checked; sons.efeitos = cfg.efeitos; salvarCfg(); });
   $('#cfgTilt').addEventListener('change', (e) => { cfg.tilt = e.target.checked; maquete.setTiltShift(cfg.tilt); salvarCfg(); });
-  $('#cfgQualidade').addEventListener('change', (e) => { cfg.qualidade = e.target.value; maquete.setQualidade(cfg.qualidade); salvarCfg(); });
+  $('#cfgQualidade').addEventListener('change', (e) => {
+    cfg.qualidade = e.target.value;
+    if (cfg.qualidade === 'auto') {
+      const ini = qualidadeInicial().nivel;
+      maquete.auto = true; maquete.teto = ini;
+      maquete.setQualidade(ini);
+      cfg.qualidadeAuto = ini;
+    } else {
+      maquete.auto = false;
+      maquete.setQualidade(cfg.qualidade);
+    }
+    salvarCfg();
+    atualizarInfoQualidade();
+  });
+  setInterval(() => { if (!$('#modalConfig').classList.contains('oculto')) atualizarInfoQualidade(); }, 1500);
   $('#cfgReiniciar').addEventListener('click', async () => {
     if (!(await confirmar('Apagar todo o progresso e recomeçar a jornada?'))) return;
     try { localStorage.removeItem(CHAVE); } catch { /* */ }
@@ -648,9 +671,12 @@ function ligarEventos() {
 
   maquete.callbacks.lote = (k) => { const m = missaoDoLote(k); if (!m) return; if (E.concluidas[m.id]) verConstrucao(k); else abrirMissao(m.id); };
   maquete.callbacks.construcao = (k) => verConstrucao(k);
-  maquete.callbacks.qualidade = (q) => {
-    cfg.qualidade = q; salvarCfg();
-    toast(q === 'leve' ? '⚙️ Qualidade gráfica ajustada para Leve para manter o jogo fluido.' : '⚙️ Qualidade gráfica ajustada para Alta para manter o jogo fluido.', 'var(--azul)');
+  maquete.callbacks.qualidade = (q, fps, direcao) => {
+    cfg.qualidadeAuto = q; salvarCfg();
+    const nome = QUALIDADES[q].nome;
+    if (direcao === 'desceu') toast(`⚙️ Gráficos reduzidos para ${nome} para o jogo ficar fluido (${fps} ${fps === 1 ? 'quadro' : 'quadros'} por segundo).`, 'var(--azul)');
+    else toast(`✨ O computador tem folga: gráficos melhorados para ${nome}.`, 'var(--verde)');
+    atualizarInfoQualidade();
   };
   maquete.callbacks.invalido = () => toast('Escolha um espaço livre de grama, longe de ruas, casas, lotes e do rio.', 'var(--rosa)');
 }
@@ -663,7 +689,10 @@ async function iniciar() {
     throw e;
   }
   try { await Promise.race([document.fonts.ready, new Promise((r) => setTimeout(r, 2500))]); } catch { /* */ }
-  cfg = { ...cfgPadrao(), ...(lerLocal(CHAVE_CFG) || {}) };
+  const cfgSalva = lerLocal(CHAVE_CFG) || {};
+  cfg = { ...cfgPadrao(), ...cfgSalva };
+  // versões anteriores guardavam uma qualidade fixa; passa a usar o ajuste automático
+  if (cfgSalva.versaoQualidade !== 2) { cfg.qualidade = 'auto'; cfg.qualidadeAuto = null; cfg.versaoQualidade = 2; salvarCfg(); }
   E = { ...estadoInicial(), ...(lerLocal(CHAVE) || {}) };
   sons = new Sons();
   sons.efeitos = cfg.efeitos;
@@ -673,7 +702,13 @@ async function iniciar() {
   narr.onFim = fimFala;
   $('#btnSom').textContent = cfg.mudo ? '🔇' : '🔊';
 
-  maquete = new Maquete($('#cena'), { qualidade: cfg.qualidade, tiltShift: cfg.tilt });
+  const auto = cfg.qualidade === 'auto' || !QUALIDADES[cfg.qualidade];
+  const teto = qualidadeInicial().nivel;
+  // no modo automático, começa no nível que funcionou da última vez (sem passar do estimado para a placa)
+  const ultimo = cfg.qualidadeAuto && QUALIDADES[cfg.qualidadeAuto] ? cfg.qualidadeAuto : teto;
+  const NV = Object.keys(QUALIDADES);
+  const inicial = auto ? NV[Math.max(NV.indexOf(teto), NV.indexOf(ultimo))] : cfg.qualidade;
+  maquete = new Maquete($('#cena'), { qualidade: inicial, auto, teto, tiltShift: cfg.tilt });
   await maquete.init();
   await narr.init(cfg.vozes);
   // restaura progresso salvo
@@ -682,6 +717,7 @@ async function iniciar() {
   maquete.aplicarIndicadores(E.ind);
   ligarEventos();
   ligarConfig();
+  maquete.monitorAtivo = true;
   atualizarHUD();
   montarInicial();
   maquete.mostrarMarcadores(false);
