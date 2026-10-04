@@ -13,6 +13,8 @@ import * as T from './texturas.js';
 
 const META = 72;              // metade do lado da maquete (144 m)
 const RAIO_PRACA = 18.6, ANEL_INT = 19.6, ANEL_EXT = 25.2, CALCADA_EXT = 26.6;
+export const ARVORES = ['ipe', 'pitangueira', 'oiti', 'sibipiruna'];
+const ESCALA_PRACA = 1.5; // árvores plantadas nos canteiros da praça crescem um pouco mais
 
 export const LOTES = (() => {
   const L = { centro: { x: 0, z: 0, raio: 18 } };
@@ -788,13 +790,11 @@ export class Maquete {
     this.raio(e);
     if (this.modoColocar) {
       const hit = this.raycaster.intersectObject(this.terreno, false)[0];
-      if (hit && this.podeColocar(hit.point.x, hit.point.z)) {
-        const cb = this.modoColocar.cb;
-        const tipo = this.modoColocar.tipo;
-        cb && cb(tipo, hit.point.x, hit.point.z);
-      } else if (hit) {
-        this.callbacks.invalido && this.callbacks.invalido();
-      }
+      if (!hit) return;
+      const tipo = this.modoColocar.tipo;
+      const r = this.analisarPosicao(tipo, hit.point.x, hit.point.z);
+      if (r.ok) { const cb = this.modoColocar.cb; cb && cb(tipo, r.x, r.z); }
+      else this.callbacks.invalido && this.callbacks.invalido(r.motivo);
       return;
     }
     const alvos = [this.praca, ...Object.values(this.pads).map((p) => p.pad).filter(Boolean), ...Object.values(this.construidos)];
@@ -854,6 +854,7 @@ export class Maquete {
     g.traverse((o) => { if (o.isMesh && o.castShadow === undefined) o.castShadow = true; });
     this.cena.add(g);
     this.construidos[lote] = g;
+    if (lote === 'centro' && g.userData.copas) this.copasPraca = g.userData.copas.slice();
     if (this.chuva && g.userData.setChuva) g.userData.setChuva(true);
     const pad = this.pads[lote];
     const deg = pad.degradado;
@@ -932,6 +933,40 @@ export class Maquete {
   }
 
   // ------------------------------------------------------------ itens (ações sustentáveis)
+  // Na praça, só árvores, e apenas nos canteiros circulares livres (a posição "encaixa" no canteiro).
+  analisarPosicao(tipo, x, z) {
+    if (Math.hypot(x, z) < ANEL_INT) {
+      if (!ARVORES.includes(tipo)) return { ok: false, motivo: 'pracaSoArvores' };
+      if (!this.construidos.centro) return { ok: false, motivo: 'pracaSemCanteiros' };
+      let melhor = null, dm = 3.5;
+      for (const v of M.VAGAS_PRACA) { const d = Math.hypot(v.x - x, v.z - z); if (d < dm) { dm = d; melhor = v; } }
+      if (!melhor) return { ok: false, motivo: 'pracaSoArvores' };
+      if (this.itens.some((i) => Math.hypot(i.x - melhor.x, i.z - melhor.z) < 0.5)) return { ok: false, motivo: 'canteiroOcupado' };
+      return { ok: true, x: melhor.x, z: melhor.z, praca: true };
+    }
+    return this.podeColocar(x, z) ? { ok: true, x, z } : { ok: false, motivo: 'terreno' };
+  }
+
+  dosselContinuo() { return !!this.construidos.centro?.userData.dosselContinuo; }
+
+  vagasLivresPraca() {
+    return M.VAGAS_PRACA.filter((v) => !this.itens.some((i) => Math.hypot(i.x - v.x, i.z - v.z) < 0.5)).length;
+  }
+
+  // Porcentagem da área da praça coberta pela projeção das copas (amostragem em grade de 0,5 m).
+  coberturaPraca() {
+    const copas = this.copasPraca || [];
+    if (!copas.length) return 0;
+    const R = ANEL_INT, p = 0.5;
+    let tot = 0, cob = 0;
+    for (let x = -R; x <= R; x += p) for (let z = -R; z <= R; z += p) {
+      if (x * x + z * z > R * R) continue;
+      tot++;
+      for (const c of copas) { const dx = x - c.x, dz = z - c.z; if (dx * dx + dz * dz <= c.r * c.r) { cob++; break; } }
+    }
+    return Math.round((100 * cob) / tot);
+  }
+
   podeColocar(x, z) {
     if (!this.livre(x, z, 0.4)) return false;
     if (this.casas.some((h) => Math.abs(h.x - x) < 3.6 && Math.abs(h.z - z) < 3.6)) return false;
@@ -958,8 +993,11 @@ export class Maquete {
     const m = this.modoColocar;
     if (!hit) { m.fantasma.visible = false; return; }
     m.fantasma.visible = true;
-    m.fantasma.position.set(hit.point.x, Math.max(0, hit.point.y), hit.point.z);
-    m.ind.material.color.set(this.podeColocar(hit.point.x, hit.point.z) ? 0x2fbf71 : 0xff4d4d);
+    const r = this.analisarPosicao(m.tipo, hit.point.x, hit.point.z);
+    const naPraca = Math.hypot(hit.point.x, hit.point.z) < ANEL_INT;
+    m.fantasma.position.set(r.ok ? r.x : hit.point.x, naPraca ? 0.22 : Math.max(0, hit.point.y), r.ok ? r.z : hit.point.z);
+    m.fantasma.scale.setScalar(r.ok && r.praca ? ESCALA_PRACA : 1);
+    m.ind.material.color.set(r.ok ? 0x2fbf71 : 0xff4d4d);
   }
 
   cancelarColocacao() {
@@ -973,8 +1011,13 @@ export class Maquete {
     const fab = M.ITENS[tipo];
     if (!fab) return;
     const o = fab(seed);
-    o.position.set(x, 0.02, z);
+    const naPraca = Math.hypot(x, z) < ANEL_INT;
+    o.position.set(x, naPraca ? 0.22 : 0.02, z);
     o.rotation.y = (seed * 1.37) % 6.28;
+    if (naPraca) {
+      o.scale.multiplyScalar(ESCALA_PRACA);
+      if (M.COPA_ITEM[tipo]) (this.copasPraca ||= []).push({ x, z, r: M.COPA_ITEM[tipo] * ESCALA_PRACA });
+    }
     this.cena.add(o);
     this.itens.push({ tipo, x, z, obj: o });
     if (animar) {

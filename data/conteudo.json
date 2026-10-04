@@ -275,6 +275,34 @@
       "missaoCancelada": {
         "p": "teo",
         "t": "Tudo bem, você pode voltar a essa missão quando quiser."
+      },
+      "dosselFechado": {
+        "p": "lia",
+        "t": "O dossel da praça se fechou! As copas das árvores agora se encostam e fazem uma sombra contínua sobre a calçada e os bancos. Isso combate a ilha de calor: o asfalto e o concreto ao sol acumulam calor o dia inteiro, enquanto a sombra e a água que as folhas liberam deixam o piso muitos graus mais fresco e refrescam o ar ao redor."
+      },
+      "dosselAmpliado": {
+        "p": "lia",
+        "t": "Com as novas árvores, a sombra chegou à calçada da borda e aos assentos da arquibancada. Menos calor acumulado no piso, mais conforto para quem caminha e conversa, e mais abrigo para pássaros e polinizadores."
+      },
+      "plantioPraca": {
+        "p": "teo",
+        "t": "Dica: na praça, as árvores vão nos canteiros circulares: alguns ficam na borda, para sombrear a calçada, e outros junto à arquibancada, para sombrear os assentos. Plante em um canteiro livre."
+      },
+      "pracaSoArvores": {
+        "p": "teo",
+        "t": "Na praça, só podemos plantar árvores, e apenas nos canteiros circulares."
+      },
+      "pracaSemCanteiros": {
+        "p": "teo",
+        "t": "Os canteiros da praça ainda não existem. Conclua a missão da Roda de Escuta para preparar a praça."
+      },
+      "canteiroOcupado": {
+        "p": "teo",
+        "t": "Esse canteiro já tem uma árvore. Escolha outro canteiro livre."
+      },
+      "sombraPraca": {
+        "p": "lia",
+        "t": "Este é o indicador de sombra na praça: a porcentagem do piso coberta pelas copas das árvores. Quanto maior a sombra, menor a ilha de calor e maior o conforto de quem usa a praça."
       }
     },
     "final": [
@@ -463,22 +491,22 @@
         }
       ],
       "ficha": {
-        "texto": "Roda de Escuta da Praça Viva: uma arquibancada circular à sombra do grande ipê, com tenda de diálogo, varal de ideias e bandeirolas. É o lugar onde a escuta se transforma em decisão compartilhada.",
+        "texto": "Roda de Escuta da Praça Viva: uma arquibancada circular sob um dossel contínuo de vinte árvores nativas, entre ipês, oitis, sibipirunas e pitangueiras, com copas que se encostam e sombreiam a calçada e os bancos. A tenda de diálogo e o varal de ideias completam o lugar onde a escuta se transforma em decisão compartilhada.",
         "itens": [
+          "Dossel contínuo com 20 árvores nativas",
           "Arquibancada circular acessível",
-          "Ipê-amarelo da memória",
-          "Tenda de diálogo e varal de ideias",
-          "Canteiros com flores nativas"
+          "Bancos à sombra e canteiros para novas árvores",
+          "Tenda de diálogo e varal de ideias"
         ]
       },
       "encerramento": [
         {
           "p": "jurema",
-          "t": "A praça ganhou sombra e uma roda para conversar. Agora, cada projeto do bairro começa aqui, com a gente decidindo junto."
+          "t": "A praça ganhou um teto verde de árvores e uma roda para conversar. Agora, cada projeto do bairro começa aqui, na sombra, com a gente decidindo junto."
         }
       ],
       "indicadores": {
-        "verde": 8,
+        "verde": 14,
         "agua": 2,
         "residuos": 6,
         "comunidade": 14,
@@ -2606,7 +2634,7 @@
     {
       "id": "ipe",
       "nome": "Ipê-amarelo",
-      "icone": "🌼",
+      "icone": "🌻",
       "custo": 10,
       "ind": {
         "verde": 2
@@ -2628,6 +2656,32 @@
       "fala": {
         "p": "teo",
         "t": "Pitangueira: árvore frutífera nativa, com sombra para a vizinhança e frutos para as pessoas e os pássaros."
+      }
+    },
+    {
+      "id": "oiti",
+      "nome": "Oiti",
+      "icone": "🌳",
+      "custo": 10,
+      "ind": {
+        "verde": 2
+      },
+      "fala": {
+        "p": "teo",
+        "t": "Oiti: árvore nativa de copa densa e sempre verde, muito usada para sombrear praças e calçadas."
+      }
+    },
+    {
+      "id": "sibipiruna",
+      "nome": "Sibipiruna",
+      "icone": "🌼",
+      "custo": 10,
+      "ind": {
+        "verde": 2
+      },
+      "fala": {
+        "p": "teo",
+        "t": "Sibipiruna: árvore nativa de copa larga e flores amarelas, ótima para fazer sombra em ruas e praças."
       }
     },
     {

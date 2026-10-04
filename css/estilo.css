@@ -246,6 +246,11 @@ input[type='checkbox'] { width: 20px; height: 20px; accent-color: var(--verde); 
 .cfg-rodape { display: flex; justify-content: space-between; gap: 10px; margin-top: 18px; flex-wrap: wrap; }
 .passos { display: grid; gap: 10px; padding-left: 22px; font-weight: 600; line-height: 1.45; }
 
+/* indicador de sombra na praça */
+.ind.sombra { cursor: pointer; padding-top: 8px; border-top: 2px dashed rgba(31, 138, 76, .25); }
+.dossel { font-style: normal; font-size: .7rem; font-weight: 800; padding: 1px 8px; border-radius: 999px; margin-left: 6px; background: #ffe9c7; color: #9a5b00; }
+.dossel.ok { background: #d9f7e7; color: #1e8a50; }
+
 /* informação de qualidade */
 .cfg-info { font-weight: 700; font-size: .8rem; color: var(--tinta-2); line-height: 1.35; }
 

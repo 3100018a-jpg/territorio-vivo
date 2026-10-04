@@ -1,5 +1,5 @@
 // Lógica do jogo Território Vivo: missões, perguntas, narração, pontuação, ações sustentáveis e progresso.
-import { Maquete, LOTES, QUALIDADES, qualidadeInicial } from './maquete.js';
+import { Maquete, LOTES, QUALIDADES, qualidadeInicial, ARVORES } from './maquete.js';
 import { Narrador } from './voz.js';
 import { Sons } from './sons.js';
 import { AVATARES } from './avatares.js';
@@ -153,6 +153,15 @@ function montarIndicadores() {
     el.innerHTML = `<span class="ico">${d.icone}</span><span class="rot">${d.nome}</span><span class="barra"><i style="width:${v}%"></i></span><span class="val">${v}</span>`;
     box.appendChild(el);
   }
+  // cobertura arbórea da praça (sombra das copas)
+  const cob = maquete ? maquete.coberturaPraca() : 0;
+  const sb = document.createElement('div');
+  sb.className = 'ind sombra'; sb.style.setProperty('--cor', '#1f8a4c');
+  const estado = maquete && maquete.dosselContinuo() ? '<em class="dossel ok">dossel contínuo</em>' : '<em class="dossel">sem dossel</em>';
+  sb.innerHTML = `<span class="ico">🌳</span><span class="rot">Sombra na praça ${estado}</span><span class="barra"><i style="width:${cob}%"></i></span><span class="val">${cob}%</span>`;
+  sb.title = 'Ouvir explicação';
+  sb.addEventListener('click', () => falarPainel('sombraPraca'));
+  box.appendChild(sb);
   const n = nivelParticipacao();
   $('#escada').innerHTML = '<h4>🪜 Escada da participação</h4>' + Object.entries(C.niveis).reverse().map(([k, nv]) =>
     `<div class="degrau ${n && n.chave === k ? 'atual' : ''}"><b style="background:${nv.cor}">${nv.nome}</b><span>${nv.descricao}</span></div>`).join('');
@@ -217,6 +226,14 @@ async function abrirMissao(id) {
     const fala = narr.falar('lia', m.ficha.texto);
     await Promise.all([anim, fala]);
     sons.conquista();
+    if (m.lote === 'centro') {
+      const cob = maquete.coberturaPraca();
+      if (maquete.dosselContinuo() && !E.dosselFechado) {
+        E.dosselFechado = true; salvar();
+        toast(`🌳 Dossel fechado: ${cob}% da praça na sombra`, 'var(--verde)');
+        await falar(C.sistema.paineis.dosselFechado);
+      }
+    }
     await narr.sequencia(m.encerramento);
   }
   // pontuação e indicadores
@@ -433,9 +450,12 @@ function escolherItem(it) {
   if (E.sementes < it.custo) { sons.erro(); falarPainel('sementesInsuf'); toast('Sementes insuficientes', 'var(--rosa)'); return; }
   sons.clique();
   narr.pararTudo();
-  narr.sequencia([it.fala, C.sistema.paineis.modoColocar]);
+  const naPraca = ARVORES.includes(it.id) && maquete.construidos.centro && maquete.vagasLivresPraca() > 0;
+  narr.sequencia([it.fala, naPraca ? C.sistema.paineis.plantioPraca : C.sistema.paineis.modoColocar]);
   if (innerWidth < 820) $('#painel').classList.add('recolhido');
-  $('#bcTexto').textContent = `${it.icone} ${it.nome}: clique em um espaço livre do terreno`;
+  $('#bcTexto').textContent = naPraca
+    ? `${it.icone} ${it.nome}: clique em um canteiro circular da praça (${maquete.vagasLivresPraca()} ${maquete.vagasLivresPraca() === 1 ? 'livre' : 'livres'}) ou em um espaço livre do terreno`
+    : `${it.icone} ${it.nome}: clique em um espaço livre do terreno`;
   $('#barraColocar').classList.remove('oculto');
   maquete.iniciarColocacao(it.id, (tipo, x, z) => {
     if (E.sementes < it.custo) return;
@@ -443,14 +463,22 @@ function escolherItem(it) {
     const seed = Math.floor(Math.random() * 1e5);
     E.itens.push({ tipo, x: +x.toFixed(2), z: +z.toFixed(2), seed });
     for (const k in it.ind) E.ind[k] = Math.min(100, E.ind[k] + it.ind[k]);
+    const antes = maquete.coberturaPraca();
     maquete.colocarItem(tipo, x, z, true, seed);
     maquete.aplicarIndicadores(E.ind);
+    const depois = maquete.coberturaPraca();
     salvar();
     atualizarHUD();
     sons.moeda();
-    toast(`${it.icone} ${it.nome} adicionado! −${it.custo} 🌱`);
     narr.pararTudo();
-    falar(C.sistema.paineis.itemColocado);
+    if (depois > antes) {
+      toast(`${it.icone} ${it.nome} plantado na praça! Sombra: ${antes}% → ${depois}% · −${it.custo} 🌱`);
+      if ((depois >= 50 || maquete.vagasLivresPraca() === 0) && !E.dosselAmpliado) { E.dosselAmpliado = true; salvar(); falar(C.sistema.paineis.dosselAmpliado); }
+      else falar(C.sistema.paineis.itemColocado);
+    } else {
+      toast(`${it.icone} ${it.nome} adicionado! −${it.custo} 🌱`);
+      falar(C.sistema.paineis.itemColocado);
+    }
     sairColocacao();
   });
 }
@@ -553,7 +581,7 @@ function abrirCertificado() {
   const est = Object.values(E.concluidas).reduce((s, c) => s + c.estrelas, 0);
   $('#certNome').value = E.nome || '';
   $('#certNomeTxt').textContent = E.nome || '________________';
-  $('#certDados').textContent = `${nConcluidas()} missões concluídas · ${est} estrelas · nível de participação: ${n ? n.nome : '—'} · ${E.itens.length} ações sustentáveis`;
+  $('#certDados').textContent = `${nConcluidas()} missões concluídas · ${est} estrelas · nível de participação: ${n ? n.nome : '—'} · ${E.itens.length} ações sustentáveis · ${maquete.coberturaPraca()}% de sombra na praça`;
   $('#certAssinaturas').innerHTML = Object.entries(C.personagens).map(([p, per]) => `<div><span class="avatar" style="--cor:${per.cor}">${AVATARES[p]}</span><i>${per.nome}</i><small>${per.papel.split(' e ')[0]}</small></div>`).join('');
   $('#certData').textContent = new Date().toLocaleDateString('pt-BR', { day: 'numeric', month: 'long', year: 'numeric' });
   abrirModal('modalCertificado');
@@ -678,7 +706,11 @@ function ligarEventos() {
     else toast(`✨ O computador tem folga: gráficos melhorados para ${nome}.`, 'var(--verde)');
     atualizarInfoQualidade();
   };
-  maquete.callbacks.invalido = () => toast('Escolha um espaço livre de grama, longe de ruas, casas, lotes e do rio.', 'var(--rosa)');
+  maquete.callbacks.invalido = (motivo) => {
+    const f = C.sistema.paineis[motivo];
+    if (f) { toast(f.t, 'var(--rosa)'); narr.pararTudo(); falar(f); }
+    else toast('Escolha um espaço livre de grama, longe de ruas, casas, lotes e do rio.', 'var(--rosa)');
+  };
 }
 
 async function iniciar() {

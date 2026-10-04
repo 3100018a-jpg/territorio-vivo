@@ -197,7 +197,7 @@ export function arvore(tipo = 'redonda', o = {}) {
     const h = 2.8 * s;
     const t1 = cil(0.16 * s, 0.32 * s, h, TRONCO); t1.rotation.z = 0.05; g.add(t1);
     const galho = cil(0.08 * s, 0.13 * s, 1.6 * s, TRONCO, 0.5 * s, h - 0.6 * s, 0); galho.rotation.z = -0.7; g.add(galho);
-    const amarelos = [0xffcf33, 0xffdd55, 0xf7b801];
+    const amarelos = o.flores ?? [0xffcf33, 0xffdd55, 0xf7b801];
     for (let i = 0; i < 6; i++) {
       folha(amarelos[i % 3], (r() - 0.5) * 2.4 * s, h + (0.5 + r() * 1.1) * s, (r() - 0.5) * 2.4 * s, (0.9 + r() * 0.6) * s, 0.8);
     }
@@ -479,9 +479,38 @@ export function matAgua(cor = 0x3fb3e8) {
 // ================================================================
 // CONSTRUÇÕES
 // ================================================================
+// ---------------- praça: dossel contínuo e canteiros de plantio ----------------
+const RAIO_DOSSEL = 13.2;
+// espécies nativas do anel; "copa" é o raio aproximado da copa por unidade de escala
+const ESPECIES_DOSSEL = [
+  { faz: (s, sd) => arvore('ipe', { escala: s, seed: sd }), escala: 1.45, copa: 2.0 },
+  { faz: (s, sd) => arvore('redonda', { escala: s, seed: sd, cor: 0x2e6b30 }), escala: 1.55, copa: 1.95 },
+  { faz: (s, sd) => arvore('frutifera', { escala: s, seed: sd, cor: 0x6fbf4a, frutos: 0xffd23f }), escala: 1.55, copa: 1.95 },
+  { faz: (s, sd) => arvore('frutifera', { escala: s, seed: sd, cor: 0x3c9a46, frutos: 0xd62828 }), escala: 1.45, copa: 1.95 },
+  { faz: (s, sd) => arvore('ipe', { escala: s, seed: sd, flores: [0xe75a9a, 0xd94f8f, 0xf07ab0] }), escala: 1.45, copa: 2.0 },
+];
+// Canteiros circulares na borda da praça, livres para o plantio feito pelos jogadores.
+// Borda (r = 17,4 m): sombra sobre a calçada de caminhada. Junto à arquibancada (r = 11,4 m): sombra nos assentos.
+export const VAGAS_PRACA = [[45, 17.4], [135, 17.4], [180, 17.4], [225, 17.4], [315, 17.4], [36, 11.4], [144, 11.4], [216, 11.4], [324, 11.4]].map(([g, r]) => {
+  const a = (g * Math.PI) / 180;
+  return { x: +(Math.cos(a) * r).toFixed(2), z: +(Math.sin(a) * r).toFixed(2) };
+});
+// Raio da copa (em metros) de cada árvore plantável, no tamanho padrão do item
+export const COPA_ITEM = { ipe: 2.0, oiti: 2.05, sibipiruna: 2.05, pitangueira: 1.6 };
+
+function canteiroArvore() {
+  const g = new THREE.Group();
+  g.add(cil(1.15, 1.2, 0.22, 0xcfc6b6, 0, 0, 0, { seg: 28 }));
+  g.add(cil(0.98, 0.98, 0.06, 0x4a321d, 0, 0.2, 0, { seg: 28, r: 1 }));
+  return g;
+}
+
 function rodaEscuta() {
   const g = new THREE.Group();
-  g.add(arvore('ipe', { escala: 2.0, seed: 3 }));
+  const copas = [];
+  const central = arvore('ipe', { escala: 2.0, seed: 3 });
+  g.add(central);
+  copas.push({ x: 0, z: 0, r: 2.0 * 2.1 });
   g.add(cil(2.3, 2.4, 0.5, MADEIRA));
   const gap = 0.95;
   const degraus = [[5.6, 7.0, 0.45, 0xe9845c], [7.0, 8.4, 0.9, 0xf3c969], [8.4, 9.8, 1.35, 0x5bc0be]];
@@ -491,34 +520,58 @@ function rodaEscuta() {
     const ps = [new THREE.Vector2(r1, h), new THREE.Vector2(r1 + 0.95, h), new THREE.Vector2(r1 + 0.95, h + 0.1), new THREE.Vector2(r1, h + 0.1), new THREE.Vector2(r1, h)];
     g.add(malha(new THREE.LatheGeometry(ps, 72, gap / 2, Math.PI * 2 - gap), mat(MADEIRA, { r: 0.6 })));
   });
-  // tenda de diálogo
-  const tt = new THREE.Group();
-  [[-1, -1], [1, -1], [-1, 1], [1, 1]].forEach(([a, b]) => tt.add(cil(0.07, 0.07, 2.6, 0xf5f0e6, a * 1.7, 0, b * 1.7)));
-  const teto = cone(3.0, 1.7, 0xff8a3d, 0, 2.6, 0, { seg: 4 }); teto.rotation.y = Math.PI / 4; tt.add(teto);
-  tt.add(cil(1.0, 1.0, 0.08, 0xf5f0e6, 0, 0.75, 0)); tt.add(cil(0.1, 0.1, 0.75, MADEIRA_ESC));
-  g.add(em(tt, 12.5, 0, -7.5));
-  // varal de ideias
-  const varal = new THREE.Group();
-  [-2.6, 2.6].forEach((x) => varal.add(cil(0.06, 0.07, 2.3, MADEIRA_ESC, x, 0, 0)));
-  ad(varal, em(cil(0.015, 0.015, 5.2, 0xffffff), 0, 2.1, 0)).rotation.z = Math.PI / 2;
-  const pal = [0xff4d8d, 0xffd23f, 0x3fa9f5, 0x2fbf71, 0xff8a3d, 0xc77dff, 0xffffff];
-  for (let i = 0; i < 9; i++) varal.add(caixa(0.36, 0.46, 0.02, pal[i % pal.length], -2.2 + i * 0.55, 1.6, 0, { arred: false, ds: true }));
-  g.add(em(varal, -12.5, 0, -7, 0.5));
-  // bandeirolas
-  const topo = new THREE.Vector3(0, 7.2, 0);
-  for (let i = 0; i < 6; i++) {
-    const a = (i / 6) * Math.PI * 2 + 0.5;
-    const p = new THREE.Vector3(Math.cos(a) * 12.2, 3.3, Math.sin(a) * 12.2);
-    g.add(cil(0.07, 0.08, 3.4, 0xf5f0e6, p.x, 0, p.z));
-    g.add(bandeirolas(topo, p, 9, i + 1));
+  // dossel contínuo: 20 árvores nativas em anel (a cada 18°), com as copas se encostando
+  const pos = (graus, r) => { const a = (graus * Math.PI) / 180; return [Math.cos(a) * r, Math.sin(a) * r]; };
+  for (let k = 0; k < 20; k++) {
+    const graus = 9 + k * 18;
+    const esp = ESPECIES_DOSSEL[k % ESPECIES_DOSSEL.length];
+    const [x, z] = pos(graus, RAIO_DOSSEL);
+    const t = esp.faz(esp.escala, 500 + k);
+    t.position.set(x, 0, z);
+    t.rotation.y = k * 1.7;
+    g.add(t);
+    copas.push({ x, z, r: esp.escala * esp.copa });
   }
-  // canteiros
-  [Math.PI / 4, (3 * Math.PI) / 4, (5 * Math.PI) / 4, (7 * Math.PI) / 4].forEach((a, i) => {
-    const c = canteiroFlores(3.4, 1.3, 20 + i);
-    c.position.set(Math.cos(a) * 14.6, 0, Math.sin(a) * 14.6);
-    c.rotation.y = -a + Math.PI / 2;
+  // canteiros de flores entre os troncos
+  [54, 126, 234, 306].forEach((graus, i) => {
+    const [x, z] = pos(graus, RAIO_DOSSEL);
+    const c = canteiroFlores(3.0, 1.2, 20 + i);
+    const a = (graus * Math.PI) / 180;
+    c.position.set(x, 0, z);
+    c.rotation.y = -(a + Math.PI / 2);
     g.add(c);
   });
+  // bancos à sombra, voltados para a roda
+  [75, 105, 165, 195, 250, 290].forEach((graus) => {
+    const [x, z] = pos(graus, 15.6);
+    const b = banco(0xc9a26b);
+    b.position.set(x, 0, z);
+    b.rotation.y = Math.atan2(-x, -z);
+    g.add(b);
+  });
+  // canteiros circulares vazios para o plantio dos jogadores
+  VAGAS_PRACA.forEach((v) => { const c = canteiroArvore(); c.position.set(v.x, 0, v.z); g.add(c); });
+  // tenda de diálogo (fundo da praça)
+  const tt = new THREE.Group();
+  [[-1, -1], [1, -1], [-1, 1], [1, 1]].forEach(([a, b]) => tt.add(cil(0.07, 0.07, 2.6, 0xf5f0e6, a * 1.5, 0, b * 1.5)));
+  const teto = cone(2.6, 1.5, 0xff8a3d, 0, 2.6, 0, { seg: 4 }); teto.rotation.y = Math.PI / 4; tt.add(teto);
+  tt.add(cil(0.9, 0.9, 0.08, 0xf5f0e6, 0, 0.75, 0)); tt.add(cil(0.1, 0.1, 0.75, MADEIRA_ESC));
+  const [tx, tz] = pos(270, 16.4);
+  g.add(em(tt, tx, 0, tz));
+  // varal de ideias (lateral)
+  const varal = new THREE.Group();
+  [-2.2, 2.2].forEach((x) => varal.add(cil(0.06, 0.07, 2.3, MADEIRA_ESC, x, 0, 0)));
+  ad(varal, em(cil(0.015, 0.015, 4.4, 0xffffff), 0, 2.1, 0)).rotation.z = Math.PI / 2;
+  const pal = [0xff4d8d, 0xffd23f, 0x3fa9f5, 0x2fbf71, 0xff8a3d, 0xc77dff, 0xffffff];
+  for (let i = 0; i < 7; i++) varal.add(caixa(0.36, 0.46, 0.02, pal[i % pal.length], -1.65 + i * 0.55, 1.6, 0, { arred: false, ds: true }));
+  const [vx, vz] = pos(0, 16.6);
+  g.add(em(varal, vx, 0, vz, -Math.PI / 2));
+  // bandeirolas do ipê central até as copas do anel
+  const topo = new THREE.Vector3(0, 7.2, 0);
+  for (let i = 0; i < 6; i++) {
+    const [x, z] = pos(9 + i * 54, RAIO_DOSSEL - 0.6);
+    g.add(bandeirolas(topo, new THREE.Vector3(x, 4.4, z), 9, i + 1));
+  }
   // pessoas na roda
   for (let i = 0; i < 9; i++) {
     const a = gap / 2 + 0.3 + (i / 9) * (Math.PI * 2 - gap - 0.6);
@@ -529,6 +582,13 @@ function rodaEscuta() {
     p.rotation.y = a + Math.PI;
     g.add(p);
   }
+  g.userData.copas = copas;
+  // o dossel é contínuo quando cada copa do anel encosta na copa vizinha
+  const anel = copas.slice(1);
+  g.userData.dosselContinuo = anel.every((c, i) => {
+    const v = anel[(i + 1) % anel.length];
+    return Math.hypot(c.x - v.x, c.z - v.z) <= c.r + v.r;
+  });
   return g;
 }
 
@@ -1013,6 +1073,8 @@ export const MODELOS = { rodaEscuta, agrofloresta, residuos, ecomuseu, urbanismo
 export const ITENS = {
   ipe: (s) => arvore('ipe', { escala: 0.95, seed: s }),
   pitangueira: (s) => arvore('frutifera', { escala: 0.75, seed: s, cor: 0x3c9a46, frutos: 0xd62828 }),
+  oiti: (s) => arvore('redonda', { escala: 0.95, seed: s, cor: 0x2e6b30 }),
+  sibipiruna: (s) => arvore('frutifera', { escala: 0.95, seed: s, cor: 0x6fbf4a, frutos: 0xffd23f }),
   flores: (s) => canteiroFlores(2.2, 1.2, s),
   colmeia: () => {
     const g = new THREE.Group();
